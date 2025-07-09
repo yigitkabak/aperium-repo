@@ -1,0 +1,15 @@
+[submodule "repo/packs/Aperture"]
+	path = repo/packs/Aperture
+	url = https://github.com/yigitkabak/Aperture.git
+[submodule "repo/packs/Synapic"]
+	path = repo/packs/Synapic
+	url = https://github.com/yigitkabak/Synapic.git
+[submodule "repo/packs/aperium"]
+	path = repo/packs/aperium
+	url = https://github.com/yigitkabak/aperium.git
+[submodule "repo/packs/huh"]
+	path = repo/packs/huh
+	url = https://github.com/yigitkabak/huh.git
+[submodule "repo/packs/omnifetch"]
+	path = repo/packs/omnifetch
+	url = https://github.com/yigitkabak/omnifetch.git
