@@ -6,7 +6,7 @@ Aperium serves as the **official and primary package repository** for all **Aper
 
 ## Contents
 
-This repository exclusively contains packages designed for the Aper ecosystem. We aim to offer a wide range of stable and well-maintained software to enhance your Aper experience.
+This repository exclusively contains packages designed for the Aperium ecosystem. We aim to offer a wide range of stable and well-maintained software to enhance your Aper experience.
 
 ---
 
