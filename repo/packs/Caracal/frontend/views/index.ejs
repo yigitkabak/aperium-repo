@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caracal - Aperture Labs.</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --grid-line-color: rgba(255, 255, 255, 0.05);
+            --grid-spacing: 20px;
+            --aperture-bg-dark: #0a0a0a;
+            --aperture-text-light: #fff;
+            --aperture-footer-bg: #111;
+            --aperture-footer-border: #222222;
+            --aperture-footer-text: #767676;
+            --footer-height: 60px;
+
+            --aperture-accent-primary: #008CBA;
+            --aperture-accent-secondary: #5BC0DE;
+            --aperture-card-bg: #1a1a1a;
+            --aperture-border-subtle: #2a2a2a;
+            --aperture-shadow-glow: rgba(0, 140, 186, 0.3);
+            --aperture-shadow-glow-light: rgba(0, 140, 186, 0.1);
+
+            --aperture-button-gradient-start: #008CBA;
+            --aperture-button-gradient-end: #00AACC;
+            --aperture-button-hover-start: #0077A0;
+            --apure-button-hover-end: #0099BB;
+
+            --aperture-error-red: #ff4500;
+            --info-label-color: #999;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--aperture-bg-dark);
+            background-image:
+                linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
+            background-size: var(--grid-spacing) var(--grid-spacing);
+            background-position: -1px -1px;
+            min-height: 100vh;
+            font-family: ui-monospace, Cascadia Code, Source Code Pro, monospace;
+            color: var(--aperture-text-light);
+
+            overflow-y: auto;
+            overflow-x: hidden;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            padding: 2rem;
+            padding-bottom: calc(2rem + var(--footer-height));
+            transition: background-color 0.5s ease;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        #speedtest-app {
+            width: 100%;
+            flex-grow: 1;
+            box-sizing: border-box;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 3rem;
+            padding: 3.5rem;
+            padding-bottom: 3rem;
+            margin-bottom: 0;
+        }
+
+        .speedtest-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        h1 {
+            font-size: 3.8rem;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: -.04em;
+            color: var(--aperture-text-light);
+            text-shadow: 0 0 18px var(--aperture-shadow-glow);
+            animation: pulse-aperture 2s infinite alternate;
+        }
+
+        @keyframes pulse-aperture {
+            from { text-shadow: 0 0 18px var(--aperture-shadow-glow); }
+            to { text-shadow: 0 0 35px var(--aperture-shadow-glow); }
+        }
+
+        .status-message {
+            font-size: 1.6rem;
+            opacity: 0.95;
+            color: var(--aperture-accent-secondary);
+            min-height: 1.8em;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: color 0.5s ease;
+        }
+
+        button {
+            background: linear-gradient(45deg, var(--aperture-button-gradient-start), var(--aperture-button-gradient-end));
+            color: white;
+            border: none;
+            padding: 1.6rem 3.5rem;
+            font-size: 1.65rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 2px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4), 0 0 30px var(--aperture-shadow-glow);
+            outline: none;
+        }
+
+        button:hover:not(:disabled) {
+            background: linear-gradient(45deg, var(--aperture-button-hover-start), var(--apure-button-hover-end));
+            transform: translateY(-6px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 45px var(--aperture-shadow-glow);
+        }
+
+        button:disabled {
+            background: #333;
+            cursor: not-allowed;
+            opacity: 0.5;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .results {
+            margin-top: 1rem;
+            padding-top: 2.5rem;
+            border-top: 1px dashed var(--aperture-border-subtle);
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .results h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--aperture-accent-primary);
+            text-shadow: 0 0 15px var(--aperture-shadow-glow);
+            letter-spacing: -.02em;
+            font-weight: 600;
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+        }
+
+        .result-group {
+            display: flex;
+            justify-content: space-around;
+            gap: 2rem;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .result-item {
+            flex: 1;
+            min-width: 200px;
+            background-color: #222;
+            padding: 2.2rem;
+            border-radius: 8px;
+            border: 1px solid #3a3a3a;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.5s ease, border-color 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .result-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at top left, var(--aperture-shadow-glow-light), transparent 70%);
+            pointer-events: none;
+            transition: background 0.5s ease;
+        }
+
+        .result-item:hover {
+            transform: translateY(-4px);
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6), 0 8px 25px rgba(0,0,0,0.4), 0 0 20px var(--aperture-shadow-glow);
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: var(--info-label-color);
+            font-size: 1.05em;
+            display: block;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        .result-value {
+            font-size: 3.5em;
+            color: var(--aperture-accent-primary);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 20px var(--aperture-shadow-glow);
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+        }
+
+        .info-block {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+            font-size: 1.05rem;
+            text-align: left;
+            padding-left: 1.8rem;
+            border-left: 5px solid var(--aperture-accent-primary);
+            width: 100%;
+            transition: border-color 0.5s ease;
+        }
+
+        .info-item {
+            line-height: 1.6;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--info-label-color);
+            margin-right: 0.75rem;
+        }
+
+        .info-value {
+            color: var(--aperture-text-light);
+            opacity: 0.9;
+            transition: color 0.5s ease;
+        }
+
+        .error {
+            color: var(--aperture-error-red);
+            margin-top: 2.5rem;
+            font-weight: bold;
+            font-size: 1.25em;
+            text-shadow: 0 0 10px rgba(255, 69, 0, 0.6);
+        }
+
+        body.calculating-theme {
+            background-color: #000;
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+            --aperture-text-light: #f0f0f0;
+            --aperture-accent-primary: #f0f0f0;
+            --aperture-accent-secondary: #cccccc;
+            --aperture-shadow-glow: rgba(255, 255, 255, 0.1);
+            --aperture-shadow-glow-light: rgba(255, 255, 255, 0.05);
+
+            & button {
+                background: linear-gradient(45deg, #333, #555);
+                box-shadow: 0 6px 20px rgba(0,0,0,0.4), 0 0 30px rgba(255,255,255,0.1);
+            }
+            & button:hover:not(:disabled) {
+                background: linear-gradient(45deg, #444, #666);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 45px rgba(255,255,255,0.2);
+            }
+
+            & .result-item {
+                background-color: #111;
+                border: 1px solid #222;
+                box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+            }
+        }
+
+        .aperture-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--footer-height);
+            background-color: var(--aperture-footer-bg);
+            border-top: 1px solid var(--aperture-footer-border);
+            color: var(--aperture-footer-text);
+            padding: 1rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+            z-index: 1000;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+        .aperture-footer i {
+            margin-left: 5px;
+            color: var(--aperture-accent-secondary);
+            transition: color 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+                padding-bottom: calc(1rem + var(--footer-height));
+            }
+            #speedtest-app {
+                padding: 2rem;
+                gap: 2.5rem;
+            }
+            h1 {
+                font-size: 2.8rem;
+            }
+            .status-message {
+                font-size: 1.3rem;
+            }
+            button {
+                padding: 1.2rem 2.5rem;
+                font-size: 1.3rem;
+            }
+            .results h2 {
+                font-size: 2.2rem;
+            }
+            .result-group {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            .result-item {
+                min-width: unset;
+                width: 100%;
+                padding: 1.8rem;
+            }
+            .result-value {
+                font-size: 3em;
+            }
+            .info-block {
+                font-size: 1rem;
+                padding-left: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding-bottom: calc(1.5rem + var(--footer-height));
+            }
+            #speedtest-app {
+                padding: 1.5rem;
+                gap: 2rem;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            .status-message {
+                font-size: 1.1rem;
+            }
+            button {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+            .results h2 {
+                font-size: 1.8rem;
+            }
+            .result-value {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="speedtest-app">
+        <div class="speedtest-header">
+            <h1>Caracal</h1>
+        </div>
+
+        <p class="status-message" id="status-message">Ready to test</p>
+
+        <button id="start-test-button">
+            Start Test
+        </button>
+
+        <div class="results" id="results-section" style="display: none;">
+            <h2>Results</h2>
+            <div class="result-group">
+                <div class="result-item">
+                    <span class="result-label">Ping</span>
+                    <span class="result-value" id="ping-value">N/A</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Jitter</span>
+                    <span class="result-value" id="jitter-value">N/A</span>
+                </div>
+            </div>
+
+            <div class="result-group">
+                <div class="result-item">
+                    <span class="result-label">Download</span>
+                    <span class="result-value" id="download-value">N/A</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Upload</span>
+                    <span class="result-value" id="upload-value">N/A</span>
+                </div>
+            </div>
+
+            <div class="info-block">
+                <div class="info-item">
+                    <span class="info-label">Server:</span> <span class="info-value" id="server-info">N/A</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Your ISP/IP:</span> <span class="info-value" id="client-info">N/A</span>
+                </div>
+            </div>
+            <p class="error" id="error-message" style="display: none;"></p>
+        </div>
+    </div>
+
+    <footer class="aperture-footer">
+        <p>&copy; Aperture Labs. All rights reserved. <i class="fas fa-microchip"></i></p>
+    </footer>
+
+    <script>
+        const statusMessageElement = document.getElementById('status-message');
+        const startTestButton = document.getElementById('start-test-button');
+        const resultsSection = document.getElementById('results-section');
+        const errorMessageElement = document.getElementById('error-message');
+
+        const pingValueElement = document.getElementById('ping-value');
+        const jitterValueElement = document.getElementById('jitter-value');
+        const downloadValueElement = document.getElementById('download-value');
+        const uploadValueElement = document.getElementById('upload-value');
+        const serverInfoElement = document.getElementById('server-info');
+        const clientInfoElement = document.getElementById('client-info');
+
+        let testPhase = 'idle';
+
+        function setTestPhase(phase) {
+            testPhase = phase;
+            updateUI();
+        }
+
+        function animateSlotMachineNumber(element, finalValue, unit = '') {
+            const duration = 1500;
+            const frameRate = 60;
+            const totalFrames = duration / (1000 / frameRate);
+            let currentFrame = 0;
+
+            const initialPlaceholder = "------";
+            element.textContent = initialPlaceholder;
+
+            const animationInterval = setInterval(() => {
+                currentFrame++;
+                if (currentFrame < totalFrames) {
+                    let tempValue = "";
+                    const targetString = finalValue.toFixed(2);
+                    for (let i = 0; i < targetString.length; i++) {
+                        if (targetString[i] === '.') {
+                            tempValue += '.';
+                        } else {
+                            if (currentFrame > totalFrames * 0.7 && Math.random() > 0.5) {
+                                tempValue += targetString[i];
+                            } else {
+                                tempValue += Math.floor(Math.random() * 10).toString();
+                            }
+                        }
+                    }
+                    element.textContent = `${tempValue} ${unit}`;
+                } else {
+                    clearInterval(animationInterval);
+                    element.textContent = `${finalValue.toFixed(2)} ${unit}`;
+                }
+            }, 1000 / frameRate);
+        }
+
+        function updateUI() {
+            let buttonText = 'Start Test';
+            let buttonDisabled = false;
+            let resultsVisible = false;
+            let errorVisible = false;
+            let statusText = '';
+
+            if (testPhase === 'pinging' || testPhase === 'downloading' || testPhase === 'uploading') {
+                document.body.classList.add('calculating-theme');
+            } else {
+                document.body.classList.remove('calculating-theme');
+            }
+
+            switch (testPhase) {
+                case 'idle':
+                    statusText = 'Ready to test';
+                    break;
+                case 'pinging':
+                    statusText = 'Pinging servers...';
+                    buttonText = 'Running Test...';
+                    buttonDisabled = true;
+                    break;
+                case 'downloading':
+                    statusText = 'Downloading...';
+                    buttonText = 'Running Test...';
+                    buttonDisabled = true;
+                    break;
+                case 'uploading':
+                    statusText = 'Uploading...';
+                    buttonText = 'Running Test...';
+                    buttonDisabled = true;
+                    break;
+                case 'complete':
+                    statusText = 'Test complete!';
+                    resultsVisible = true;
+                    break;
+                case 'error':
+                    statusText = 'Test failed!';
+                    resultsVisible = true;
+                    errorVisible = true;
+                    break;
+            }
+
+            statusMessageElement.textContent = statusText;
+            startTestButton.textContent = buttonText;
+            startTestButton.disabled = buttonDisabled;
+            resultsSection.style.display = resultsVisible ? 'flex' : 'none';
+            errorMessageElement.style.display = errorVisible ? 'block' : 'none';
+        }
+
+        async function startSpeedTest() {
+            setTestPhase('pinging');
+            errorMessageElement.textContent = '';
+
+            pingValueElement.textContent = '---';
+            jitterValueElement.textContent = '---';
+            downloadValueElement.textContent = '---';
+            uploadValueElement.textContent = '---';
+            serverInfoElement.textContent = 'N/A';
+            clientInfoElement.textContent = 'N/A';
+
+            try {
+                const response = await fetch('http://localhost:1881/api/speedtest'); 
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({})); 
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Backend response:', data);
+
+                if (data.error) {
+                    errorMessageElement.textContent = data.error;
+                    setTestPhase('error');
+                    return;
+                }
+
+                animateSlotMachineNumber(pingValueElement, data.ping, 'ms');
+                animateSlotMachineNumber(jitterValueElement, data.jitter, 'ms');
+                animateSlotMachineNumber(downloadValueElement, data.download, 'Mbps');
+                animateSlotMachineNumber(uploadValueElement, data.upload, 'Mbps');
+                
+                serverInfoElement.textContent = data.server && data.location ? `${data.server} (${data.location})` : 'N/A';
+                clientInfoElement.textContent = data.isp && data.ip ? `${data.isp} (${data.ip})` : 'N/A';
+
+                setTestPhase('complete');
+            } catch (e) {
+                console.error('Error during speed test:', e);
+                errorMessageElement.textContent = `Test failed: ${e.message}`;
+                setTestPhase('error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            startTestButton.addEventListener('click', startSpeedTest);
+            updateUI();
+        });
+    </script>
+</body>
+</html>
