@@ -156,7 +156,7 @@ router.get("/search", async (ctx) => {
     const query = (ctx.request.url.searchParams.get("query") || ctx.request.url.searchParams.get("q") || "").trim();
     let type = (ctx.request.url.searchParams.get("type") || "web").toLowerCase();
     const start = Math.max(0, parseInt(ctx.request.url.searchParams.get("start") || "0"));
-    const lang = (ctx.request.url.searchParams.get("lang") || "en").toLowerCase(); // Changed default lang to en
+    const lang = (ctx.request.url.searchParams.get("lang") || "en").toLowerCase();
 
     if (!query) {
         ctx.response.redirect("/");
@@ -297,7 +297,7 @@ router.get("/api/search", checkApiKey, async (ctx) => {
     const query = (ctx.request.url.searchParams.get("query") || ctx.request.url.searchParams.get("q"))?.trim();
     let type = (ctx.request.url.searchParams.get("type") || "web").toLowerCase();
     const start = Math.max(0, parseInt(ctx.request.url.searchParams.get("start") || "0"));
-    const lang = (ctx.request.url.searchParams.get("lang") || "en").toLowerCase(); // Changed default lang to en
+    const lang = (ctx.request.url.searchParams.get("lang") || "en").toLowerCase();
 
     if (!query) {
         ctx.response.status = 400;
@@ -468,7 +468,7 @@ router.get("/manifesto", async (ctx) => {
     ctx.response.body = await renderFileToString(manifestoPath);
 });
 
-router.get("/iletisim", async (ctx) => { // "iletisim" means "contact"
+router.get("/iletisim", async (ctx) => {
     const iletisimPath = `${VIEWS_ROOT}/iletisim.ejs`;
     console.log(`[Render Debug] Attempting to render: ${iletisimPath}`);
     ctx.response.body = await renderFileToString(iletisimPath, { messageSent: false });
@@ -488,22 +488,22 @@ router.get("/privacy", async (ctx) => {
 
 router.get("/image", (ctx) => {
     const query = ctx.request.url.searchParams.get("q") || "";
-    const lang = ctx.request.url.searchParams.get("lang") || "en"; // Changed default lang to en
+    const lang = ctx.request.url.searchParams.get("lang") || "en";
     ctx.response.redirect(`/search?query=${encodeURIComponent(query)}&type=image&lang=${encodeURIComponent(lang)}`);
 });
 router.get("/wiki", (ctx) => {
     const query = ctx.request.url.searchParams.get("q") || "";
-    const lang = ctx.request.url.searchParams.get("lang") || "en"; // Changed default lang to en
+    const lang = ctx.request.url.searchParams.get("lang") || "en";
     ctx.response.redirect(`/search?query=${encodeURIComponent(query)}&type=wiki&lang=${encodeURIComponent(lang)}`);
 });
 router.get("/video", (ctx) => {
     const query = ctx.request.url.searchParams.get("q") || "";
-    const lang = ctx.request.url.searchParams.get("lang") || "en"; // Changed default lang to en
+    const lang = ctx.request.url.searchParams.get("lang") || "en";
     ctx.response.redirect(`/search?query=${encodeURIComponent(query)}&type=video&lang=${encodeURIComponent(lang)}`);
 });
 router.get("/news", (ctx) => {
     const query = ctx.request.url.searchParams.get("q") || "";
-    const lang = ctx.request.url.searchParams.get("lang") || "en"; // Changed default lang to en
+    const lang = ctx.request.url.searchParams.get("lang") || "en";
     ctx.response.redirect(`/search?query=${encodeURIComponent(query)}&type=news&lang=${encodeURIComponent(lang)}`);
 });
 
