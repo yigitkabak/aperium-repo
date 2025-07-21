@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
   <title>
-    Synapic Search - Geçmiş
+    Synapic Search - History
   </title>
   <script src="https://cdn.tailwindcss.com">
   </script>
@@ -97,27 +97,27 @@
         </button>
         <button class="text-[#8E8E93] text-sm" type="button" id="searchOptionsButton">
             <i class="fas fa-cog text-[14px]"></i>
-            <span>Ayarlar</span>
+            <span>Settings</span>
         </button>
     </div>
   </header>
 
   <main class="flex-grow flex flex-col items-center px-4 py-8">
-    <h1 class="text-white text-4xl font-bold mb-8">Geçmiş</h1>
+    <h1 class="text-white text-4xl font-bold mb-8">History</h1>
 
     <div id="historyList" class="w-full max-w-[700px] space-y-4">
-        <p class="text-center text-[#8E8E93]">Geçmiş yükleniyor...</p>
+        <p class="text-center text-[#8E8E93]">Loading history...</p>
     </div>
 
     <button class="mt-8 px-6 py-3 bg-red-700 text-white rounded-full hover:bg-red-800 transition-colors duration-200" id="clearHistoryButton">
-        Geçmişi Temizle
+        Clear History
     </button>
   </main>
 
   <footer class="flex flex-wrap justify-center gap-4 px-4 py-3 text-xs text-[#8E8E93] border-t border-[#3A3A3C] mt-auto">
    <span class="flex items-center space-x-1">
     <a class="hover:underline" href="/privacy">
-      Gizlilik ve Şartlar
+      Privacy & Terms
     </a>
    </span>
    <span class="ml-auto text-[#5A5A5F] select-none">
@@ -129,8 +129,8 @@
     <span class="overlay-close" id="closeMenuButton">&times;</span>
     <div class="overlay-content">
         <nav class="flex flex-col space-y-4 text-2xl">
-            <a href="/past" class="text-white hover:text-[#8E8E93]">Geçmiş</a>
-            <a href="/privacy" class="text-white hover:text-[#8E8E93]">Gizlilik ve şartlar</a>
+            <a href="/past" class="text-white hover:text-[#8E8E93]">History</a>
+            <a href="/privacy" class="text-white hover:text-[#8E8E93]">Privacy & Terms</a>
         </nav>
     </div>
   </div>
@@ -138,22 +138,22 @@
   <div id="searchOptionsOverlay" class="overlay">
     <span class="overlay-close" id="closeSearchOptionsButton">&times;</span>
     <div class="overlay-content">
-        <h2 class="text-4xl font-bold mb-8">Arama Seçenekleri</h2>
+        <h2 class="text-4xl font-bold mb-8">Search Options</h2>
         <div class="space-y-4 text-xl">
             <div class="flex items-center justify-center space-x-2">
                 <input type="checkbox" id="locationBased" class="form-checkbox h-5 w-5 text-[#5A5A5F] rounded">
-                <label for="locationBased" class="text-white">Konum Tabanlı Sonuçlar</label>
+                <label for="locationBased" class="text-white">Location-Based Results</label>
             </div>
             <div class="flex items-center justify-center space-x-2">
-                <label for="languageSelect" class="text-white">Dil:</label>
+                <label for="languageSelect" class="text-white">Language:</label>
                 <select id="languageSelect" class="bg-[#2C2C2E] text-white p-2 rounded">
-                    <option value="tr">Türkçe</option>
+                    <option value="tr">Turkish</option>
                     <option value="en">English</option>
-                    <option value="de">Deutsch</option>
+                    <option value="de">German</option>
                 </select>
             </div>
             <button class="mt-6 px-6 py-3 bg-[#5A5A5F] text-white rounded-full hover:bg-[#6A6A6F] transition-colors duration-200" id="saveSearchOptions">
-                Ayarları Kaydet
+                Save Settings
             </button>
         </div>
     </div>
@@ -162,38 +162,38 @@
   <div id="gridViewOverlay" class="overlay">
     <div class="modal-content">
         <span class="overlay-close" id="closeGridViewButton">&times;</span>
-        <h2 class="text-3xl font-bold mb-6 text-white">Hızlı Arama</h2>
+        <h2 class="text-3xl font-bold mb-6 text-white">Quick Search</h2>
         <form aria-label="Quick search form" class="w-full mb-6" action="/search" method="GET">
             <div class="relative mb-4">
                 <input class="w-full rounded-full bg-[#18181B] text-[#8E8E93] placeholder-[#8E8E93] py-3 pl-6 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#5A5A5F] focus:bg-[#3A3A3C]" 
-                       id="quickSearchInput" name="query" placeholder="Arama yap..." type="search"/>
+                       id="quickSearchInput" name="query" placeholder="Search..." type="search"/>
                 <button aria-label="Quick Search Submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-[#8E8E93] hover:text-white" type="submit">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
             <input type="hidden" id="quickSearchType" name="type" value="web">
-            <input type="hidden" name="lang" id="quickSearchLang" value="tr">
+            <input type="hidden" name="lang" id="quickSearchLang" value="en">
         </form>
         <nav class="flex flex-col space-y-3 text-xl">
             <a href="#" data-type="web" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
                 <i class="fas fa-globe text-[#8E8E93]"></i>
-                <span class="text-white">Web'den Ara</span>
+                <span class="text-white">Search Web</span>
             </a>
             <a href="#" data-type="image" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
                 <i class="fas fa-image text-[#8E8E93]"></i>
-                <span class="text-white">Resimden Ara</span>
+                <span class="text-white">Search Images</span>
             </a>
             <a href="#" data-type="news" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
                 <i class="fas fa-newspaper text-[#8E8E93]"></i>
-                <span class="text-white">Haberlerde Ara</span>
+                <span class="text-white">Search News</span>
             </a>
             <a href="#" data-type="wiki" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
                 <i class="fab fa-wikipedia-w text-[#8E8E93]"></i>
-                <span class="text-white">Wikipedia'da Ara</span>
+                <span class="text-white">Search Wikipedia</span>
             </a>
             <a href="#" data-type="video" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
                 <i class="fas fa-video text-[#8E8E93]"></i>
-                <span class="text-white">Videolarda Ara</span>
+                <span class="text-white">Search Videos</span>
             </a>
         </nav>
     </div>
@@ -246,7 +246,7 @@
         }
 
         const loadLanguageSetting = () => {
-            const savedLang = localStorage.getItem('synapicSearchLang') || 'tr';
+            const savedLang = localStorage.getItem('synapicSearchLang') || 'en'; // Changed default to 'en'
             languageSelect.value = savedLang;
             if (quickSearchLang) {
                 quickSearchLang.value = savedLang;
@@ -304,13 +304,13 @@
         });
 
         const updateQuickSearchInputPlaceholder = (type) => {
-            let placeholderText = "Arama yap...";
+            let placeholderText = "Search...";
             switch(type) {
-                case 'web': placeholderText = "Web'de ara..."; break;
-                case 'image': placeholderText = "Resimlerde ara..."; break;
-                case 'news': placeholderText = "Haberlerde ara..."; break;
-                case 'wiki': placeholderText = "Wikipedia'da ara..."; break;
-                case 'video': placeholderText = "Videolarda ara..."; break;
+                case 'web': placeholderText = "Search the web..."; break;
+                case 'image': placeholderText = "Search images..."; break;
+                case 'news': placeholderText = "Search news..."; break;
+                case 'wiki': placeholderText = "Search Wikipedia..."; break;
+                case 'video': placeholderText = "Search videos..."; break;
             }
             quickSearchInput.placeholder = placeholderText;
         };
@@ -334,20 +334,20 @@
                 const history = await response.json();
                 renderHistory(history);
             } catch (error) {
-                console.error("Geçmiş getirilirken hata:", error);
-                historyList.innerHTML = '<p class="text-center text-red-500">Geçmiş yüklenirken bir hata oluştu.</p>';
+                console.error("Error fetching history:", error);
+                historyList.innerHTML = '<p class="text-center text-red-500">An error occurred while loading history.</p>';
             }
         };
 
         const renderHistory = (history) => {
             historyList.innerHTML = '';
             if (history.length === 0) {
-                historyList.innerHTML = '<p class="text-center text-[#8E8E93]">Henüz geçmiş kaydı yok.</p>';
+                historyList.innerHTML = '<p class="text-center text-[#8E8E93]">No history records yet.</p>';
                 return;
             }
 
             history.forEach(item => {
-                const date = new Date(item.timestamp).toLocaleString('tr-TR', {
+                const date = new Date(item.timestamp).toLocaleString('en-US', { // Changed locale to 'en-US'
                     year: 'numeric', month: 'long', day: 'numeric',
                     hour: '2-digit', minute: '2-digit'
                 });
@@ -360,10 +360,10 @@
                                 </a>
                             </h3>
                             <p class="text-[#8E8E93] text-sm">${item.url}</p>
-                            <p class="text-[#5A5A5F] text-xs mt-1">Ziyaret Edildi: ${date}</p>
+                            <p class="text-[#5A5A5F] text-xs mt-1">Visited: ${date}</p>
                         </div>
                         <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="mt-3 sm:mt-0 px-4 py-2 bg-[#5A5A5F] text-white rounded-full hover:bg-[#6A6A6F] transition-colors duration-200 text-sm">
-                            Tekrar Ziyaret Et
+                            Revisit
                         </a>
                     </div>
                 `;
@@ -372,17 +372,17 @@
         };
 
         clearHistoryButton.addEventListener('click', async () => {
-            if (confirm('Geçmişi temizlemek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
+            if (confirm('Are you sure you want to clear your history? This action cannot be undone.')) { // Changed confirmation message
                 try {
                     const response = await fetch('/api/clear-history', { method: 'POST' });
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
-                    alert('Geçmiş başarıyla temizlendi.');
+                    alert('History successfully cleared.'); // Changed alert message
                     fetchHistory();
                 } catch (error) {
-                    console.error("Geçmiş temizlenirken hata:", error);
-                    alert('Geçmiş temizlenirken bir hata oluştu.');
+                    console.error("Error clearing history:", error);
+                    alert('An error occurred while clearing history.'); // Changed alert message
                 }
             }
         });
