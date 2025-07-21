@@ -97,7 +97,7 @@
         </button>
         <button class="text-[#8E8E93] text-sm" type="button" id="searchOptionsButton">
             <i class="fas fa-cog text-[14px]"></i>
-            <span>Ayarlar</span>
+            <span>Settings</span>
         </button>
     </div>
   </header>
@@ -109,7 +109,7 @@
         </label>
         <div class="relative">
             <input class="w-full rounded-full bg-[#2C2C2E] text-[#8E8E93] placeholder-[#8E8E93] py-3 pl-6 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#5A5A5F] focus:bg-[#3A3A3C]" 
-                   id="search-results" name="query" placeholder="Hadi getirelim ..." type="search" value="<%= query %>"/>
+                   id="search-results" name="query" placeholder="Let's get it..." type="search" value="<%= query %>"/>
             <button aria-label="Search" class="absolute right-4 top-1/2 -translate-y-1/2 text-[#8E8E93] hover:text-white" type="submit">
                 <i class="fas fa-search"></i>
             </button>
@@ -120,17 +120,17 @@
     <div class="w-full max-w-[700px] text-sm text-[#8E8E93] mb-6 flex justify-end items-center">
         <div class="flex space-x-4">
             <a href="/search?query=<%= encodeURIComponent(query) %>&type=web&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'web' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Web</a>
-            <a href="/search?query=<%= encodeURIComponent(query) %>&type=image&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'image' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Görsel</a>
+            <a href="/search?query=<%= encodeURIComponent(query) %>&type=image&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'image' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Image</a>
             <a href="/search?query=<%= encodeURIComponent(query) %>&type=video&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'video' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Video</a>
-            <a href="/search?query=<%= encodeURIComponent(query) %>&type=news&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'news' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Haber</a>
+            <a href="/search?query=<%= encodeURIComponent(query) %>&type=news&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'news' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">News</a>
             <a href="/search?query=<%= encodeURIComponent(query) %>&type=wiki&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'wiki' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Wiki</a>
         </div>
     </div>
 
     <% if (errorMessage) { %>
         <div class="bg-red-800 text-white p-4 rounded-lg w-full max-w-[700px] mb-6">
-            <p>Hata: <%= errorMessage %></p>
-            <p>Lütfen daha sonra tekrar deneyin veya farklı bir arama sorgusu kullanın.</p>
+            <p>Error: <%= errorMessage %></p>
+            <p>Please try again later or use a different search query.</p>
         </div>
     <% } %>
 
@@ -164,7 +164,7 @@
         </div>
     <% } else if (type === 'image' && images.length > 0) { %>
         <div class="w-full max-w-[700px]">
-            <h2 class="text-xl font-bold text-white mb-4">Görsel Sonuçları</h2>
+            <h2 class="text-xl font-bold text-white mb-4">Image Results</h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 <% images.forEach(image => { %>
                     <div class="bg-[#2C2C2E] rounded-lg overflow-hidden shadow-lg flex flex-col search-result-item">
@@ -180,7 +180,7 @@
         </div>
     <% } else if (type === 'video' && videos.length > 0) { %>
         <div class="w-full max-w-[700px]">
-            <h2 class="text-xl font-bold text-white mb-4">Video Sonuçları</h2>
+            <h2 class="text-xl font-bold text-white mb-4">Video Results</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <% videos.forEach(video => { %>
                     <div class="bg-[#2C2C2E] rounded-lg overflow-hidden shadow-lg search-result-item">
@@ -201,7 +201,7 @@
         </div>
     <% } else if (type === 'news' && newsResults.length > 0) { %>
         <div class="w-full max-w-[700px]">
-            <h2 class="text-xl font-bold text-white mb-4">Haber Sonuçları</h2>
+            <h2 class="text-xl font-bold text-white mb-4">News Results</h2>
             <div class="space-y-6">
                 <% newsResults.forEach(news => { %>
                     <div class="bg-[#2C2C2E] p-4 rounded-lg shadow-lg flex flex-col sm:flex-row items-start space-y-3 sm:space-y-0 sm:space-x-4 search-result-item">
@@ -218,7 +218,7 @@
                             <div class="text-[#8E8E93] text-xs">
                                 <span><%= news.source %></span>
                                 <% if (news.date) { %>
-                                    <span class="ml-2">| <%= new Date(news.date).toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+                                    <span class="ml-2">| <%= new Date(news.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
                                 <% } %>
                             </div>
                         </div>
@@ -234,14 +234,14 @@
             <% } %>
             <p class="text-[#E0E0E0] text-sm leading-relaxed mb-3"><%= wiki.summary %></p>
             <a href="<%= wiki.url %>" target="_blank" rel="noopener noreferrer" class="text-[#8E8E93] hover:underline text-xs">
-                Wikipedia'da daha fazlasını oku <i class="fas fa-external-link-alt ml-1"></i>
+                Read more on Wikipedia <i class="fas fa-external-link-alt ml-1"></i>
             </a>
             <div class="clear-both"></div>
         </div>
     <% } else { %>
         <div class="text-[#8E8E93] text-lg mt-8">
-            <p>Üzgünüz, aramanız için sonuç bulunamadı.</p>
-            <p class="text-sm mt-2">Farklı bir arama sorgusu veya türü deneyin.</p>
+            <p>Sorry, no results found for your search.</p>
+            <p class="text-sm mt-2">Try a different search query or type.</p>
         </div>
     <% } %>
 
@@ -249,18 +249,18 @@
         <div class="flex justify-between w-full max-w-[700px] mt-8">
             <% if (start > 0) { %>
                 <a href="/search?query=<%= encodeURIComponent(query) %>&type=<%= type %>&start=<%= Math.max(0, start - 10) %>&lang=<%= lang %>" class="px-4 py-2 bg-[#2C2C2E] text-white rounded-full hover:bg-[#3A3A3C] transition-colors duration-200">
-                    <i class="fas fa-arrow-left mr-2"></i>Önceki
+                    <i class="fas fa-arrow-left mr-2"></i>Previous
                 </a>
             <% } else { %>
-                <span class="px-4 py-2 bg-[#2C2C2E] text-[#5A5A5F] rounded-full cursor-not-allowed"><i class="fas fa-arrow-left mr-2"></i>Önceki</span>
+                <span class="px-4 py-2 bg-[#2C2C2E] text-[#5A5A5F] rounded-full cursor-not-allowed"><i class="fas fa-arrow-left mr-2"></i>Previous</span>
             <% } %>
 
             <% if ((type === 'web' && results.length === 10) || (type === 'news' && newsResults.length === 10)) { %>
                 <a href="/search?query=<%= encodeURIComponent(query) %>&type=<%= type %>&start=<%= start + 10 %>&lang=<%= lang %>" class="px-4 py-2 bg-[#2C2C2E] text-white rounded-full hover:bg-[#3A3A3C] transition-colors duration-200">
-                    Sonraki<i class="fas fa-arrow-right ml-2"></i>
+                    Next<i class="fas fa-arrow-right ml-2"></i>
                 </a>
             <% } else { %>
-                <span class="px-4 py-2 bg-[#2C2C2E] text-[#5A5A5F] rounded-full cursor-not-allowed">Sonraki<i class="fas fa-arrow-right ml-2"></i></span>
+                <span class="px-4 py-2 bg-[#2C2C2E] text-[#5A5A5F] rounded-full cursor-not-allowed">Next<i class="fas fa-arrow-right ml-2"></i></span>
             <% } %>
         </div>
     <% } %>
@@ -269,7 +269,7 @@
 
   <footer class="flex flex-wrap justify-center gap-4 px-4 py-3 text-xs text-[#8E8E93] border-t border-[#3A3A3C] mt-auto">
    <span class="flex items-center space-x-1">
-    <a class="hover:underline" href="/privacy">Gizlilik ve Şartlar</a>
+    <a class="hover:underline" href="/privacy">Privacy & Terms</a>
    </span>
    <span class="ml-auto text-[#5A5A5F] select-none">
     © Aperture Labs.
@@ -280,8 +280,8 @@
     <span class="overlay-close" id="closeMenuButton">&times;</span>
     <div class="overlay-content">
         <nav class="flex flex-col space-y-4 text-2xl">
-            <a href="/past" class="text-white hover:text-[#8E8E93]">Geçmiş</a>
-            <a href="#" class="text-white hover:text-[#8E8E93]">Gizlilik ve Şartlar</a>
+            <a href="/past" class="text-white hover:text-[#8E8E93]">History</a>
+            <a href="#" class="text-white hover:text-[#8E8E93]">Privacy & Terms</a>
         </nav>
     </div>
   </div>
@@ -289,22 +289,22 @@
   <div id="searchOptionsOverlay" class="overlay">
     <span class="overlay-close" id="closeSearchOptionsButton">&times;</span>
     <div class="overlay-content">
-        <h2 class="text-4xl font-bold mb-8">Arama Seçenekleri</h2>
+        <h2 class="text-4xl font-bold mb-8">Search Options</h2>
         <div class="space-y-4 text-xl">
             <div class="flex items-center justify-center space-x-2">
                 <input type="checkbox" id="locationBased" class="form-checkbox h-5 w-5 text-[#5A5A5F] rounded">
-                <label for="locationBased" class="text-white">Konum Tabanlı Sonuçlar</label>
+                <label for="locationBased" class="text-white">Location-Based Results</label>
             </div>
             <div class="flex items-center justify-center space-x-2">
-                <label for="languageSelect" class="text-white">Dil:</label>
+                <label for="languageSelect" class="text-white">Language:</label>
                 <select id="languageSelect" class="bg-[#2C2C2E] text-white p-2 rounded">
-                    <option value="tr">Türkçe</option>
+                    <option value="tr">Turkish</option>
                     <option value="en">English</option>
-                    <option value="de">Deutsch</option>
+                    <option value="de">German</option>
                 </select>
             </div>
             <button class="mt-6 px-6 py-3 bg-[#5A5A5F] text-white rounded-full hover:bg-[#6A6A6F] transition-colors duration-200" id="saveSearchOptions">
-                Ayarları Kaydet
+                Save Settings
             </button>
         </div>
     </div>
@@ -313,11 +313,11 @@
   <div id="gridViewOverlay" class="overlay">
     <div class="modal-content">
         <span class="overlay-close" id="closeGridViewButton">&times;</span>
-        <h2 class="text-3xl font-bold mb-6 text-white">Hızlı Arama</h2>
+        <h2 class="text-3xl font-bold mb-6 text-white">Quick Search</h2>
         <form aria-label="Quick search form" class="w-full mb-6" action="/search" method="GET">
             <div class="relative mb-4">
                 <input class="w-full rounded-full bg-[#18181B] text-[#8E8E93] placeholder-[#8E8E93] py-3 pl-6 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#5A5A5F] focus:bg-[#3A3A3C]" 
-                       id="quickSearchInput" name="query" placeholder="Arama yap..." type="search"/>
+                       id="quickSearchInput" name="query" placeholder="Search..." type="search"/>
                 <button aria-label="Quick Search Submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-[#8E8E93] hover:text-white" type="submit">
                     <i class="fas fa-search"></i>
                 </button>
@@ -328,23 +328,23 @@
         <nav class="flex flex-col space-y-3 text-xl">
             <a href="#" data-type="web" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
                 <i class="fas fa-globe text-[#8E8E93]"></i>
-                <span class="text-white">Web'den Ara</span>
+                <span class="text-white">Search Web</span>
             </a>
             <a href="#" data-type="image" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
                 <i class="fas fa-image text-[#8E8E93]"></i>
-                <span class="text-white">Resimden Ara</span>
+                <span class="text-white">Search Images</span>
             </a>
             <a href="#" data-type="news" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
                 <i class="fas fa-newspaper text-[#8E8E93]"></i>
-                <span class="text-white">Haberlerde Ara</span>
+                <span class="text-white">Search News</span>
             </a>
             <a href="#" data-type="wiki" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
                 <i class="fab fa-wikipedia-w text-[#8E8E93]"></i>
-                <span class="text-white">Wikipedia'da Ara</span>
+                <span class="text-white">Search Wikipedia</span>
             </a>
             <a href="#" data-type="video" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
                 <i class="fas fa-video text-[#8E8E93]"></i>
-                <span class="text-white">Videolarda Ara</span>
+                <span class="text-white">Search Videos</span>
             </a>
         </nav>
     </div>
@@ -398,7 +398,7 @@
         }
 
         const loadLanguageSetting = () => {
-            const savedLang = localStorage.getItem('synapicSearchLang') || 'tr';
+            const savedLang = localStorage.getItem('synapicSearchLang') || 'en';
             languageSelect.value = savedLang;
             mainSearchLang.value = savedLang;
             quickSearchLang.value = savedLang;
@@ -440,7 +440,7 @@
                 }
             });
         } else {
-            console.warn("searchOptionsButton bulunamadı. Ayarlar butonu işlevsiz olabilir.");
+            console.warn("searchOptionsButton not found. Settings button may be non-functional.");
         }
 
         gridViewButton.addEventListener('click', () => {
@@ -460,13 +460,13 @@
         });
 
         const updateQuickSearchInputPlaceholder = (type) => {
-            let placeholderText = "Arama yap...";
+            let placeholderText = "Search...";
             switch(type) {
-                case 'web': placeholderText = "Web'de ara..."; break;
-                case 'image': placeholderText = "Resimlerde ara..."; break;
-                case 'news': placeholderText = "Haberlerde ara..."; break;
-                case 'wiki': placeholderText = "Wikipedia'da ara..."; break;
-                case 'video': placeholderText = "Videolarda ara..."; break;
+                case 'web': placeholderText = "Search the web..."; break;
+                case 'image': placeholderText = "Search images..."; break;
+                case 'news': placeholderText = "Search news..."; break;
+                case 'wiki': placeholderText = "Search Wikipedia..."; break;
+                case 'video': placeholderText = "Search videos..."; break;
             }
             quickSearchInput.placeholder = placeholderText;
         };
@@ -487,7 +487,7 @@
             const lang = "<%= lang %>";
 
             if (query && query.trim() !== '') {
-                const title = `Arama: ${query} (${type} araması)`;
+                const title = `Search: ${query} (${type} search)`;
                 const url = `/search?query=${encodeURIComponent(query)}&type=${encodeURIComponent(type)}&lang=${encodeURIComponent(lang)}`;
 
                 try {
@@ -501,15 +501,15 @@
                     });
                     if (!response.ok) {
                         const errorText = await response.text();
-                        console.error('Geçmişe kaydetme API hatası:', response.status, errorText);
+                        console.error('History save API error:', response.status, errorText);
                     } else {
-                        console.log('Geçmişe kaydetme isteği başarıyla gönderildi.');
+                        console.log('History save request sent successfully.');
                     }
                 } catch (error) {
-                    console.error('Geçmişe kaydetme sırasında ağ hatası:', error);
+                    console.error('Network error during history save:', error);
                 }
             } else {
-                console.log('Boş sorgu, geçmişe kaydedilmiyor.');
+                console.log('Empty query, not saving to history.');
             }
         };
 
