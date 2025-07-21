@@ -619,32 +619,32 @@ function containsExcludedScripts(text: string): boolean {
     for (let i = 0; i < text.length; i++) {
         const codePoint = text.codePointAt(i)!;
 
-        if (codePoint >= 0x0600 && codePoint <= 0x06FF) return true; // Arabic
-        if (codePoint >= 0x0750 && codePoint <= 0x077F) return true; // Arabic Supplement
-        if (codePoint >= 0x08A0 && codePoint <= 0x08FF) return true; // Arabic Extended-A
-        if (codePoint >= 0xFB50 && codePoint <= 0xFDFF) return true; // Arabic Presentation Forms-A
-        if (codePoint >= 0xFE70 && codePoint <= 0xFEFF) return true; // Arabic Presentation Forms-B
+        if (codePoint >= 0x0600 && codePoint <= 0x06FF) return true;
+        if (codePoint >= 0x0750 && codePoint <= 0x077F) return true;
+        if (codePoint >= 0x08A0 && codePoint <= 0x08FF) return true;
+        if (codePoint >= 0xFB50 && codePoint <= 0xFDFF) return true;
+        if (codePoint >= 0xFE70 && codePoint <= 0xFEFF) return true;
 
-        if (codePoint >= 0x4E00 && codePoint <= 0x9FFF) return true; // CJK Unified Ideographs
-        if (codePoint >= 0x3400 && codePoint <= 0x4DBF) return true; // CJK Unified Ideographs Extension A
-        if (codePoint >= 0x20000 && codePoint <= 0x2A6DF) return true; // CJK Unified Ideographs Extension B
-        if (codePoint >= 0x2A700 && codePoint <= 0x2B73F) return true; // CJK Unified Ideographs Extension C
-        if (codePoint >= 0x2B740 && codePoint <= 0x2B81F) return true; // CJK Unified Ideographs Extension D
-        if (codePoint >= 0x2B820 && codePoint <= 0x2CEAF) return true; // CJK Unified Ideographs Extension E
-        if (codePoint >= 0x2CEB0 && codePoint <= 0x2EBEF) return true; // CJK Unified Ideographs Extension F
-        if (codePoint >= 0x30000 && codePoint <= 0x3134F) return true; // CJK Unified Ideographs Extension G
-        if (codePoint >= 0x31350 && codePoint <= 0x323AF) return true; // CJK Unified Ideographs Extension H
+        if (codePoint >= 0x4E00 && codePoint <= 0x9FFF) return true;
+        if (codePoint >= 0x3400 && codePoint <= 0x4DBF) return true;
+        if (codePoint >= 0x20000 && codePoint <= 0x2A6DF) return true;
+        if (codePoint >= 0x2A700 && codePoint <= 0x2B73F) return true;
+        if (codePoint >= 0x2B740 && codePoint <= 0x2B81F) return true;
+        if (codePoint >= 0x2B820 && codePoint <= 0x2CEAF) return true;
+        if (codePoint >= 0x2CEB0 && codePoint <= 0x2EBEF) return true;
+        if (codePoint >= 0x30000 && codePoint <= 0x3134F) return true;
+        if (codePoint >= 0x31350 && codePoint <= 0x323AF) return true;
 
-        if (codePoint >= 0x3040 && codePoint <= 0x309F) return true; // Hiragana
-        if (codePoint >= 0x30A0 && codePoint <= 0x30FF) return true; // Katakana
-        if (codePoint >= 0x31F0 && codePoint <= 0x31FF) return true; // Katakana Phonetic Extensions
-        if (codePoint >= 0xFF00 && codePoint <= 0xFFEF) return true; // Halfwidth and Fullwidth Forms
+        if (codePoint >= 0x3040 && codePoint <= 0x309F) return true;
+        if (codePoint >= 0x30A0 && codePoint <= 0x30FF) return true;
+        if (codePoint >= 0x31F0 && codePoint <= 0x31FF) return true;
+        if (codePoint >= 0xFF00 && codePoint <= 0xFFEF) return true;
 
-        if (codePoint >= 0x1100 && codePoint <= 0x11FF) return true; // Hangul Jamo
-        if (codePoint >= 0x3130 && codePoint <= 0x318F) return true; // Hangul Compatibility Jamo
-        if (codePoint >= 0xA960 && codePoint <= 0xA97F) return true; // Hangul Jamo Extended-A
-        if (codePoint >= 0xAC00 && codePoint <= 0xD7A3) return true; // Hangul Syllables
-        if (codePoint >= 0xD7B0 && codePoint <= 0xD7FF) return true; // Hangul Jamo Extended-B
+        if (codePoint >= 0x1100 && codePoint <= 0x11FF) return true;
+        if (codePoint >= 0x3130 && codePoint <= 0x318F) return true;
+        if (codePoint >= 0xA960 && codePoint <= 0xA97F) return true;
+        if (codePoint >= 0xAC00 && codePoint <= 0xD7A3) return true;
+        if (codePoint >= 0xD7B0 && codePoint <= 0xD7FF) return true;
     }
     return false;
 }
