@@ -246,7 +246,7 @@
         }
 
         const loadLanguageSetting = () => {
-            const savedLang = localStorage.getItem('synapicSearchLang') || 'en'; // Changed default to 'en'
+            const savedLang = localStorage.getItem('synapicSearchLang') || 'en';
             languageSelect.value = savedLang;
             if (quickSearchLang) {
                 quickSearchLang.value = savedLang;
@@ -347,7 +347,7 @@
             }
 
             history.forEach(item => {
-                const date = new Date(item.timestamp).toLocaleString('en-US', { // Changed locale to 'en-US'
+                const date = new Date(item.timestamp).toLocaleString('en-US', {
                     year: 'numeric', month: 'long', day: 'numeric',
                     hour: '2-digit', minute: '2-digit'
                 });
@@ -372,17 +372,17 @@
         };
 
         clearHistoryButton.addEventListener('click', async () => {
-            if (confirm('Are you sure you want to clear your history? This action cannot be undone.')) { // Changed confirmation message
+            if (confirm('Are you sure you want to clear your history? This action cannot be undone.')) {
                 try {
                     const response = await fetch('/api/clear-history', { method: 'POST' });
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
-                    alert('History successfully cleared.'); // Changed alert message
+                    alert('History successfully cleared.');
                     fetchHistory();
                 } catch (error) {
                     console.error("Error clearing history:", error);
-                    alert('An error occurred while clearing history.'); // Changed alert message
+                    alert('An error occurred while clearing history.');
                 }
             }
         });
