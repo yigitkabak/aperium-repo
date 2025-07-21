@@ -139,7 +139,7 @@ export async function fetchWikiSummary(query: string, lang: string = "tr"): Prom
                 Cache.set(cacheKey, null);
                 return null;
             }
-            throw new Error(`HTTP hata kodu: ${response.status}`);
+            throw new Error(`HTTP error code: ${response.status}`);
         }
 
         const data: WikipediaSummaryApiResponse = await response.json();
@@ -158,7 +158,7 @@ export async function fetchWikiSummary(query: string, lang: string = "tr"): Prom
         Cache.set(cacheKey, null);
         return null;
     } catch (error: any) {
-        console.error(`WikiSummary (${lang}) getirme hatası (${query}):`, error.message);
+        console.error(`Error fetching WikiSummary (${lang}) for (${query}):`, error.message);
         Cache.set(cacheKey, null);
         return null;
     }
@@ -195,14 +195,14 @@ export async function fetchBingImages(query: string, lang: string = "tr"): Promi
                         });
                     }
                 } catch (e: any) {
-                    console.error("Bing görsel JSON ayrıştırma hatası: ", e.message);
+                    console.error("Bing image JSON parsing error: ", e.message);
                 }
             }
         });
         Cache.set(cacheKey, images);
         return images;
     } catch (error: any) {
-        console.error("Bing Görselleri getirme hatası:", error.message);
+        console.error("Error fetching Bing Images:", error.message);
         Cache.set(cacheKey, []);
         return [];
     }
@@ -239,7 +239,7 @@ export async function fetchYoutubeResults(query: string, lang: string = "tr"): P
                             const videoUrl = `https://www.youtube.com/watch?v=${vr.videoId}`;
 
                             videos.push({
-                                title: vr.title?.runs?.[0]?.text || "Başlık Yok",
+                                title: vr.title?.runs?.[0]?.text || "No Title",
                                 url: videoUrl,
                                 thumbnail: vr.thumbnail?.thumbnails?.[0]?.url || "",
                                 source: vr.ownerText?.runs?.[0]?.text || "YouTube"
@@ -249,7 +249,7 @@ export async function fetchYoutubeResults(query: string, lang: string = "tr"): P
                     }
                 }
             } catch (e: any) {
-                console.error("YouTube JSON verisi ayrıştırma hatası: ", e.message);
+                console.error("YouTube JSON data parsing error: ", e.message);
             }
         } else {
             const document = new DOMParser().parseFromString(html, "text/html");
@@ -275,7 +275,7 @@ export async function fetchYoutubeResults(query: string, lang: string = "tr"): P
         Cache.set(cacheKey, videos);
         return videos;
     } catch (error: any) {
-        console.error("YouTube getirme hatası:", error.message);
+        console.error("Error fetching YouTube:", error.message);
         Cache.set(cacheKey, []);
         return [];
     }
@@ -311,7 +311,7 @@ export async function fetchGoogleResults(query: string, start: number = 0, lang:
                         const decodedUrl = parsedUrlParams.get("q") || resultUrl;
                         resultUrl = decodedUrl;
                     } catch (e: any) {
-                        console.error("Google yönlendirme URL'si ayrıştırılamadı:", e.message);
+                        console.error("Failed to parse Google redirect URL:", e.message);
                     }
                 }
                 try {
@@ -330,7 +330,7 @@ export async function fetchGoogleResults(query: string, start: number = 0, lang:
         Cache.set(cacheKey, results);
         return results;
     } catch (error: any) {
-        console.error("Google getirme hatası:", error.message);
+        console.error("Error fetching Google:", error.message);
         Cache.set(cacheKey, []);
         return [];
     }
@@ -372,7 +372,7 @@ export async function fetchBingResults(query: string, start: number = 0, lang: s
                     results.push({
                         title,
                         link: resultUrl,
-                        snippet: snippet || "Özet bulunamadı.",
+                        snippet: snippet || "Summary not found.",
                         displayUrl: displayUrl || parsedResultUrl.hostname.replace(/^www\./, ""),
                         source: "Bing"
                     });
@@ -383,7 +383,7 @@ export async function fetchBingResults(query: string, start: number = 0, lang: s
         Cache.set(cacheKey, results);
         return results;
     } catch (error: any) {
-        console.error("Bing getirme hatası:", error.message);
+        console.error("Error fetching Bing:", error.message);
         Cache.set(cacheKey, []);
         return [];
     }
@@ -437,7 +437,7 @@ export async function fetchDuckDuckGoResults(query: string, start: number = 0, l
                         const decodedUrl = decodeURIComponent(params.get("uddg") || "");
                         if (decodedUrl) resultUrl = decodedUrl;
                     } catch (e: any) {
-                        console.error("DuckDuckGo yönlendirme URL'si ayrıştırılamadı:", e.message, resultUrl);
+                        console.error("Failed to parse DuckDuckGo redirect URL:", e.message, resultUrl);
                     }
                 } else if (resultUrl.startsWith("/")) {
                     resultUrl = new URL(resultUrl, "https://duckduckgo.com").toString();
@@ -461,7 +461,7 @@ export async function fetchDuckDuckGoResults(query: string, start: number = 0, l
                         source: "DuckDuckGo"
                     });
                 } catch (e: any) {
-                    console.error("DuckDuckGo sonuç URL'si oluşturulamadı:", e.message, resultUrl);
+                    console.error("Failed to construct DuckDuckGo result URL:", e.message, resultUrl);
                 }
             }
         });
@@ -469,7 +469,7 @@ export async function fetchDuckDuckGoResults(query: string, start: number = 0, l
         Cache.set(cacheKey, results);
         return results;
     } catch (error: any) {
-        console.error("DuckDuckGo getirme hatası:", error.message);
+        console.error("Error fetching DuckDuckGo:", error.message);
         Cache.set(cacheKey, []);
         return [];
     }
@@ -477,7 +477,7 @@ export async function fetchDuckDuckGoResults(query: string, start: number = 0, l
 
 export async function fetchSearxResults(query: string, numPages: number = 10, lang: string = "tr"): Promise<SearchResult[]> {
     if (!SEARX_BASE_URL) {
-        console.error("SEARX_BASE_URL yapılandırılmamış.");
+        console.error("SEARX_BASE_URL is not configured.");
         return [];
     }
 
@@ -531,7 +531,7 @@ export async function fetchSearxResults(query: string, numPages: number = 10, la
                             resultUrl = absoluteUrl;
                         }
                     } catch (e: any) {
-                        console.error("Searx yönlendirme URL'si ayrıştırılamadı:", e.message, resultUrl);
+                        console.error("Failed to parse Searx redirect URL:", e.message, resultUrl);
                         resultUrl = "";
                     }
                 } else if (resultUrl.startsWith("/")) {
@@ -544,19 +544,19 @@ export async function fetchSearxResults(query: string, numPages: number = 10, la
                         allSearxResults.push({
                             title,
                             link: resultUrl,
-                            snippet: snippet || "Özet bulunamadı.",
+                            snippet: snippet || "Summary not found.",
                             displayUrl: displayUrl || parsedResultUrl.hostname.replace(/^www\./, ""),
                             source: "Searx"
                         });
                         fetchedUrls.add(resultUrl);
                     } catch (e: any) {
-                        console.error("Searx sonuç URL'si oluşturulamadı:", e.message, resultUrl);
+                        console.error("Failed to construct Searx result URL:", e.message, resultUrl);
                     }
                 }
             });
 
         } catch (error: any) {
-            console.error(`Searx sayfa ${page} getirme hatası (${query}):`, error.message);
+            console.error(`Error fetching Searx page ${page} for (${query}):`, error.message);
         }
     }
 
@@ -588,15 +588,15 @@ export async function fetchNewsResults(query: string, lang: string = "tr"): Prom
                     const parsedUrl = new URL(article.url);
                     displayUrl = parsedUrl.hostname.replace(/^www\./, "");
                 } catch (e) {
-                    console.error("Haber URL'si ayrıştırma hatası:", e);
+                    console.error("News URL parsing error:", e);
                 }
 
                 return {
                     title: article.title,
-                    snippet: article.description || "Özet bulunamadı.",
+                    snippet: article.description || "Summary not found.",
                     link: article.url,
                     displayUrl: displayUrl,
-                    source: article.source?.name || "Haber Kaynağı",
+                    source: article.source?.name || "News Source",
                     image: article.image,
                     date: article.publishedAt
                 };
@@ -608,7 +608,7 @@ export async function fetchNewsResults(query: string, lang: string = "tr"): Prom
         Cache.set(cacheKey, []);
         return [];
     } catch (error: any) {
-        console.error("Haber getirme hatası (gnews.io):", error.message);
+        console.error("Error fetching news (gnews.io):", error.message);
         Cache.set(cacheKey, []);
         return [];
     }
@@ -619,32 +619,32 @@ function containsExcludedScripts(text: string): boolean {
     for (let i = 0; i < text.length; i++) {
         const codePoint = text.codePointAt(i)!;
 
-        if (codePoint >= 0x0600 && codePoint <= 0x06FF) return true;
-        if (codePoint >= 0x0750 && codePoint <= 0x077F) return true;
-        if (codePoint >= 0x08A0 && codePoint <= 0x08FF) return true;
-        if (codePoint >= 0xFB50 && codePoint <= 0xFDFF) return true;
-        if (codePoint >= 0xFE70 && codePoint <= 0xFEFF) return true;
+        if (codePoint >= 0x0600 && codePoint <= 0x06FF) return true; // Arabic
+        if (codePoint >= 0x0750 && codePoint <= 0x077F) return true; // Arabic Supplement
+        if (codePoint >= 0x08A0 && codePoint <= 0x08FF) return true; // Arabic Extended-A
+        if (codePoint >= 0xFB50 && codePoint <= 0xFDFF) return true; // Arabic Presentation Forms-A
+        if (codePoint >= 0xFE70 && codePoint <= 0xFEFF) return true; // Arabic Presentation Forms-B
 
-        if (codePoint >= 0x4E00 && codePoint <= 0x9FFF) return true;
-        if (codePoint >= 0x3400 && codePoint <= 0x4DBF) return true;
-        if (codePoint >= 0x20000 && codePoint <= 0x2A6DF) return true;
-        if (codePoint >= 0x2A700 && codePoint <= 0x2B73F) return true;
-        if (codePoint >= 0x2B740 && codePoint <= 0x2B81F) return true;
-        if (codePoint >= 0x2B820 && codePoint <= 0x2CEAF) return true;
-        if (codePoint >= 0x2CEB0 && codePoint <= 0x2EBEF) return true;
-        if (codePoint >= 0x30000 && codePoint <= 0x3134F) return true;
-        if (codePoint >= 0x31350 && codePoint <= 0x323AF) return true;
+        if (codePoint >= 0x4E00 && codePoint <= 0x9FFF) return true; // CJK Unified Ideographs
+        if (codePoint >= 0x3400 && codePoint <= 0x4DBF) return true; // CJK Unified Ideographs Extension A
+        if (codePoint >= 0x20000 && codePoint <= 0x2A6DF) return true; // CJK Unified Ideographs Extension B
+        if (codePoint >= 0x2A700 && codePoint <= 0x2B73F) return true; // CJK Unified Ideographs Extension C
+        if (codePoint >= 0x2B740 && codePoint <= 0x2B81F) return true; // CJK Unified Ideographs Extension D
+        if (codePoint >= 0x2B820 && codePoint <= 0x2CEAF) return true; // CJK Unified Ideographs Extension E
+        if (codePoint >= 0x2CEB0 && codePoint <= 0x2EBEF) return true; // CJK Unified Ideographs Extension F
+        if (codePoint >= 0x30000 && codePoint <= 0x3134F) return true; // CJK Unified Ideographs Extension G
+        if (codePoint >= 0x31350 && codePoint <= 0x323AF) return true; // CJK Unified Ideographs Extension H
 
-        if (codePoint >= 0x3040 && codePoint <= 0x309F) return true;
-        if (codePoint >= 0x30A0 && codePoint <= 0x30FF) return true;
-        if (codePoint >= 0x31F0 && codePoint <= 0x31FF) return true;
-        if (codePoint >= 0xFF00 && codePoint <= 0xFFEF) return true;
+        if (codePoint >= 0x3040 && codePoint <= 0x309F) return true; // Hiragana
+        if (codePoint >= 0x30A0 && codePoint <= 0x30FF) return true; // Katakana
+        if (codePoint >= 0x31F0 && codePoint <= 0x31FF) return true; // Katakana Phonetic Extensions
+        if (codePoint >= 0xFF00 && codePoint <= 0xFFEF) return true; // Halfwidth and Fullwidth Forms
 
-        if (codePoint >= 0x1100 && codePoint <= 0x11FF) return true;
-        if (codePoint >= 0x3130 && codePoint <= 0x318F) return true;
-        if (codePoint >= 0xA960 && codePoint <= 0xA97F) return true;
-        if (codePoint >= 0xAC00 && codePoint <= 0xD7A3) return true;
-        if (codePoint >= 0xD7B0 && codePoint <= 0xD7FF) return true;
+        if (codePoint >= 0x1100 && codePoint <= 0x11FF) return true; // Hangul Jamo
+        if (codePoint >= 0x3130 && codePoint <= 0x318F) return true; // Hangul Compatibility Jamo
+        if (codePoint >= 0xA960 && codePoint <= 0xA97F) return true; // Hangul Jamo Extended-A
+        if (codePoint >= 0xAC00 && codePoint <= 0xD7A3) return true; // Hangul Syllables
+        if (codePoint >= 0xD7B0 && codePoint <= 0xD7FF) return true; // Hangul Jamo Extended-B
     }
     return false;
 }
@@ -662,14 +662,14 @@ export async function getAggregatedWebResults(query: string, start: number = 0, 
             const fetchPromises: Promise<SearchResult[]>[] = [];
 
             for (let i = 0; i < MAX_BING_RESULTS / 10; i++) {
-                fetchPromises.push(fetchBingResults(query, i * 10, lang).catch(e => { console.error(`Bing getirme hatası (başlangıç=${i * 10}):`, e.message); return []; }));
+                fetchPromises.push(fetchBingResults(query, i * 10, lang).catch(e => { console.error(`Bing fetch error (start=${i * 10}):`, e.message); return []; }));
             }
 
             for (let i = 0; i < MAX_DDG_RESULTS / 20; i++) {
-                fetchPromises.push(fetchDuckDuckGoResults(query, i * 20, lang).catch(e => { console.error(`DDG getirme hatası (başlangıç=${i * 20}):`, e.message); return []; }));
+                fetchPromises.push(fetchDuckDuckGoResults(query, i * 20, lang).catch(e => { console.error(`DDG fetch error (start=${i * 20}):`, e.message); return []; }));
             }
 
-            fetchPromises.push(fetchSearxResults(query, MAX_SEARX_PAGES, lang).catch(e => { console.error(`Searx getirme hatası (${MAX_SEARX_PAGES} sayfa):`, e.message); return []; }));
+            fetchPromises.push(fetchSearxResults(query, MAX_SEARX_PAGES, lang).catch(e => { console.error(`Searx fetch error (${MAX_SEARX_PAGES} pages):`, e.message); return []; }));
 
             const allFetchedResults = await Promise.all(fetchPromises);
 
@@ -694,7 +694,7 @@ export async function getAggregatedWebResults(query: string, start: number = 0, 
             }
 
         } catch (error: any) {
-            console.error("Tüm birleştirilmiş listeyi getirirken veya işlerken hata oluştu:", error.message);
+            console.error("Error fetching or processing the entire combined list:", error.message);
             Cache.set(FULL_LIST_CACHE_KEY, []);
             fullCombinedList = [];
         }
