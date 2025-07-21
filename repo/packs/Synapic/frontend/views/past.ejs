@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <title>Synapic Search - History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .result-link:hover {
+            text-decoration: underline;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .overlay.is-active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .overlay-content {
+            color: white;
+            text-align: center;
+            padding: 20px;
+            max-width: 800px;
+            width: 90%;
+        }
+        .overlay-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            color: #8E8E93;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-[#18181B] text-white min-h-screen flex flex-col">
+    <header class="flex justify-between items-center p-4">
+        <a href="/" class="text-white font-extrabold text-3xl tracking-tight">Synapic</a>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center px-4 py-8">
+        <div class="w-full max-w-[700px] px-6">
+            <h1 class="text-3xl font-bold text-white mb-6 text-center">Your Search History</h1>
+            <p class="text-[#8E8E93] text-sm mb-4 text-center">
+                Device ID: <span id="maskedDeviceId">*****</span> 
+                <button id="toggleDeviceIdVisibility" class="text-[#8E8E93] ml-2 focus:outline-none">
+                    <i class="fas fa-eye"></i>
+                </button>
+            </p>
+
+            <div id="historyList" class="space-y-4">
+                <p class="text-[#8E8E93] text-center" id="loadingMessage">Loading history...</p>
+            </div>
+
+            <div class="mt-6 text-center">
+                <button id="clearHistoryButton" class="px-5 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-200">
+                    Clear History
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="flex flex-wrap justify-center gap-4 px-4 py-3 text-xs text-[#8E8E93] border-t border-[#3A3A3C] mt-auto">
+        <span class="flex items-center space-x-1">
+            <a class="hover:underline" href="/">Home</a>
+            <a class="hover:underline" href="/privacy">Privacy & Terms</a>
+        </span>
+        <span class="ml-auto text-[#5A5A5F] select-none">© Aperture Labs.</span>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const historyList = document.getElementById('historyList');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const clearHistoryButton = document.getElementById('clearHistoryButton');
+            const maskedDeviceId = document.getElementById('maskedDeviceId');
+            const toggleDeviceIdVisibility = document.getElementById('toggleDeviceIdVisibility');
+            const toggleIcon = toggleDeviceIdVisibility.querySelector('i');
+
+            function getDeviceId() {
+                let deviceId = localStorage.getItem('synapicDeviceId');
+                if (!deviceId) {
+                    const randomDigits = Math.floor(100000 + Math.random() * 900000); 
+                    deviceId = `apm_${randomDigits}`;
+                    localStorage.setItem('synapicDeviceId', deviceId);
+                }
+                return deviceId;
+            }
+
+            const currentDeviceId = getDeviceId();
+            let isDeviceIdVisible = false;
+
+            function updateDeviceIdDisplay() {
+                if (isDeviceIdVisible) {
+                    maskedDeviceId.textContent = currentDeviceId;
+                    toggleIcon.classList.remove('fa-eye');
+                    toggleIcon.classList.add('fa-eye-slash');
+                } else {
+                    maskedDeviceId.textContent = '*****';
+                    toggleIcon.classList.remove('fa-eye-slash');
+                    toggleIcon.classList.add('fa-eye');
+                }
+            }
+
+            toggleDeviceIdVisibility.addEventListener('click', () => {
+                isDeviceIdVisible = !isDeviceIdVisible;
+                updateDeviceIdDisplay();
+            });
+
+            updateDeviceIdDisplay(); 
+
+            async function loadHistory() {
+                historyList.innerHTML = '<p class="text-[#8E8E93] text-center">Loading history...</p>';
+                try {
+                    const response = await fetch('/api/history', {
+                        headers: {
+                            'X-Device-ID': currentDeviceId
+                        }
+                    });
+                    if (!response.ok) {
+                        throw new Error(`Error loading history: ${response.statusText}`);
+                    }
+                    const history = await response.json();
+                    
+                    historyList.innerHTML = '';
+                    if (history.length === 0) {
+                        historyList.innerHTML = '<p class="text-[#8E8E93] text-center">No search history found yet.</p>';
+                    } else {
+                        history.forEach(item => {
+                            const historyItemDiv = document.createElement('div');
+                            historyItemDiv.className = 'py-2 border-b border-[#3A3A3C] last:border-b-0'; 
+                            historyItemDiv.innerHTML = `
+                                <h3 class="text-lg font-semibold text-white mb-1">
+                                    <a href="${item.url}" class="hover:underline result-link" target="_blank" rel="noopener noreferrer">${item.title}</a>
+                                </h3>
+                                <p class="text-[#8E8E93] text-sm">${new Date(item.timestamp).toLocaleString('en-US')}</p>
+                            `;
+                            historyList.appendChild(historyItemDiv);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading history:', error);
+                    historyList.innerHTML = `<p class="text-red-400 text-center">An error occurred while loading history: ${error.message}</p>`;
+                }
+            }
+
+            clearHistoryButton.addEventListener('click', async () => {
+                if (confirm('Are you sure you want to clear all your search history? This action cannot be undone.')) {
+                    try {
+                        const response = await fetch('/api/clear-history', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        if (!response.ok) {
+                            throw new Error(`Error clearing history: ${response.statusText}`);
+                        }
+                        alert('Search history successfully cleared!');
+                        loadHistory();
+                    } catch (error) {
+                        console.error('Error clearing history:', error);
+                        alert(`An error occurred while clearing history: ${error.message}`);
+                    }
+                }
+            });
+
+            await loadHistory();
+        });
+    </script>
+</body>
+</html>
