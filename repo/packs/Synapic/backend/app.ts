@@ -62,36 +62,36 @@ console.log(`[Path Debug] PUBLIC_ROOT: ${PUBLIC_ROOT}`);
 async function getHistory(): Promise<HistoryItem[]> {
     try {
         const dir = dirname(HISTORY_FILE_PATH);
-        await Deno.mkdir(dir, { recursive: true }).catch((e) => console.error("[getHistory] Dizin oluşturma hatası (varsa göz ardı edilir):", e));
+        await Deno.mkdir(dir, { recursive: true }).catch((e) => console.error("[getHistory] Directory creation error (ignored if exists):", e));
         
         if (!await exists(HISTORY_FILE_PATH)) {
-            console.log(`[getHistory] Geçmiş dosyası bulunamadı: ${HISTORY_FILE_PATH}. Yeni dosya oluşturuluyor.`);
+            console.log(`[getHistory] History file not found: ${HISTORY_FILE_PATH}. Creating new file.`);
             await Deno.writeTextFile(HISTORY_FILE_PATH, JSON.stringify([]));
             return [];
         }
 
         const fileContent = await Deno.readTextFile(HISTORY_FILE_PATH);
-        console.log(`[getHistory] Geçmiş dosyası okundu. İçerik uzunluğu: ${fileContent.length}`);
+        console.log(`[getHistory] History file read. Content length: ${fileContent.length}`);
         if (fileContent.trim() === "") {
-            console.warn("[getHistory] Geçmiş dosyası boş, boş dizi olarak yorumlanıyor.");
+            console.warn("[getHistory] History file is empty, interpreting as empty array.");
             return [];
         }
         return JSON.parse(fileContent) as HistoryItem[];
     } catch (error) {
-        console.error(`[getHistory] Geçmiş dosyası okunurken veya ayrıştırılırken hata: ${error.message}`);
+        console.error(`[getHistory] Error reading or parsing history file: ${error.message}`);
         return [];
     }
 }
 
 async function saveHistory(item: HistoryItem): Promise<void> {
     try {
-        console.log(`[saveHistory] Yeni öğe ekleniyor: ${JSON.stringify(item)}`);
+        console.log(`[saveHistory] Adding new item: ${JSON.stringify(item)}`);
         let history = await getHistory();
-        console.log(`[saveHistory] Mevcut geçmiş (öncesi): ${history.length} öğe.`);
+        console.log(`[saveHistory] Current history (before): ${history.length} items.`);
         
         const isDuplicate = history.some(existingItem => existingItem.url === item.url);
         if (isDuplicate) {
-            console.log(`[saveHistory] URL zaten geçmişte var, tekrar eklenmiyor: ${item.url}`);
+            console.log(`[saveHistory] URL already in history, not adding again: ${item.url}`);
             return;
         }
 
@@ -99,31 +99,31 @@ async function saveHistory(item: HistoryItem): Promise<void> {
         const MAX_HISTORY_ITEMS = 100;
         if (history.length > MAX_HISTORY_ITEMS) {
             history = history.slice(0, MAX_HISTORY_ITEMS);
-            console.log(`[saveHistory] Geçmiş boyutu ${MAX_HISTORY_ITEMS} ile sınırlandı.`);
+            console.log(`[saveHistory] History size limited to ${MAX_HISTORY_ITEMS}.`);
         }
         const jsonToSave = JSON.stringify(history, null, 2);
-        console.log(`[saveHistory] Geçmiş kaydediliyor. Kaydedilecek JSON boyutu: ${jsonToSave.length} byte.`);
+        console.log(`[saveHistory] Saving history. JSON size to save: ${jsonToSave.length} bytes.`);
         await Deno.writeTextFile(HISTORY_FILE_PATH, jsonToSave);
-        console.log("[saveHistory] Geçmiş başarıyla kaydedildi.");
+        console.log("[saveHistory] History successfully saved.");
     } catch (error) {
-        console.error(`[saveHistory] Geçmiş dosyası kaydedilirken hata: ${error.message}`);
+        console.error(`[saveHistory] Error saving history file: ${error.message}`);
         if (error instanceof Deno.errors.PermissionDenied) {
-            console.error("[saveHistory] HATA: Dosya yazma izni reddedildi. Lütfen '--allow-write' iznini kontrol edin.");
+            console.error("[saveHistory] ERROR: File write permission denied. Please check '--allow-write' permission.");
         } else if (error instanceof Deno.errors.NotFound) {
-            console.error("[saveHistory] HATA: Dosya veya dizin bulunamadı. Yolun doğru olduğundan emin olun.");
+            console.error("[saveHistory] ERROR: File or directory not found. Make sure the path is correct.");
         }
     }
 }
 
 async function clearAllHistory(): Promise<void> {
     try {
-        console.log("[clearAllHistory] Geçmiş temizleniyor...");
+        console.log("[clearAllHistory] Clearing history...");
         await Deno.writeTextFile(HISTORY_FILE_PATH, JSON.stringify([]));
-        console.log("[clearAllHistory] Geçmiş başarıyla temizlendi.");
+        console.log("[clearAllHistory] History successfully cleared.");
     } catch (error) {
-        console.error(`[clearAllHistory] Geçmiş temizlenirken hata: ${error.message}`);
+        console.error(`[clearAllHistory] Error clearing history: ${error.message}`);
         if (error instanceof Deno.errors.PermissionDenied) {
-            console.error("[clearAllHistory] HATA: Dosya yazma izni reddedildi. Lütfen '--allow-write' iznini kontrol edin.");
+            console.error("[clearAllHistory] ERROR: File write permission denied. Please check '--allow-write' permission.");
         }
         throw error;
     }
@@ -137,7 +137,7 @@ const checkApiKey = async (ctx: any, next: () => Promise<unknown>) => {
     const apiKey = ctx.request.url.searchParams.get("apikey");
     if (!apiKey || !validApiKeys.includes(apiKey)) {
         ctx.response.status = 403;
-        ctx.response.body = { error: "Geçersiz veya eksik API anahtarı" };
+        ctx.response.body = { error: "Invalid or missing API key" };
         return;
     }
     await next();
@@ -156,7 +156,7 @@ router.get("/search", async (ctx) => {
     const query = (ctx.request.url.searchParams.get("query") || ctx.request.url.searchParams.get("q") || "").trim();
     let type = (ctx.request.url.searchParams.get("type") || "web").toLowerCase();
     const start = Math.max(0, parseInt(ctx.request.url.searchParams.get("start") || "0"));
-    const lang = (ctx.request.url.searchParams.get("lang") || "tr").toLowerCase();
+    const lang = (ctx.request.url.searchParams.get("lang") || "en").toLowerCase(); // Changed default lang to en
 
     if (!query) {
         ctx.response.redirect("/");
@@ -189,11 +189,11 @@ router.get("/search", async (ctx) => {
 
     try {
         const fetchPromises: Promise<any>[] = [];
-        let searchSourceText = "Sonuçlar";
+        let searchSourceText = "Results";
 
         if (type === 'wiki') {
             fetchPromises.push(fetchWikiSummary(query, lang)
-                .catch((e: Error) => { console.error("Wiki getirme hatası:", e.message); return null; }));
+                .catch((e: Error) => { console.error("Wiki fetch error:", e.message); return null; }));
         } else {
             fetchPromises.push(Promise.resolve(null));
         }
@@ -203,29 +203,29 @@ router.get("/search", async (ctx) => {
         switch (type) {
             case "web":
                 mainFetchPromise = getAggregatedWebResults(query, start, lang);
-                searchSourceText = "Web Sonuçları (Birleşik)";
+                searchSourceText = "Web Results (Aggregated)";
                 break;
             case "image":
                 mainFetchPromise = fetchBingImages(query, lang);
-                searchSourceText = "Görsel Sonuçları (Bing)";
+                searchSourceText = "Image Results (Bing)";
                 break;
             case "wiki":
                 mainFetchPromise = fetchWikiSummary(query, lang);
-                searchSourceText = "Wikipedia Sonucu";
+                searchSourceText = "Wikipedia Result";
                 break;
             case "video":
                 mainFetchPromise = fetchYoutubeResults(query, lang);
-                searchSourceText = "Video Sonuçları (YouTube)";
+                searchSourceText = "Video Results (YouTube)";
                 break;
             case "news":
                 mainFetchPromise = fetchNewsResults(query, lang);
-                searchSourceText = "Haber Sonuçları (gnews.io)";
+                searchSourceText = "News Results (gnews.io)";
                 break;
             default:
                 mainFetchPromise = getAggregatedWebResults(query, start, lang);
                 renderData.type = "web";
                 type = "web";
-                searchSourceText = "Web Sonuçları (Birleşik - Varsayılan)";
+                searchSourceText = "Web Results (Aggregated - Default)";
         }
 
         renderData.searchSource = searchSourceText;
@@ -233,7 +233,7 @@ router.get("/search", async (ctx) => {
         const [wikiResultFromPromise, mainResults] = await Promise.all([
             fetchPromises[0],
             mainFetchPromise.catch((e: Error) => {
-                console.error(`${type} getirme hatası:`, e.message);
+                console.error(`${type} fetch error:`, e.message);
                 return [];
             })
         ]);
@@ -277,8 +277,8 @@ router.get("/search", async (ctx) => {
         }
 
     } catch (error: any) {
-        console.error("Arama işleme hatası:", error.message);
-        renderData.searchSource = `Sonuçlar alınırken hata oluştu`;
+        console.error("Search processing error:", error.message);
+        renderData.searchSource = `Error fetching results`;
         renderData.errorMessage = error.message;
         renderData.results = [];
         renderData.images = [];
@@ -297,20 +297,20 @@ router.get("/api/search", checkApiKey, async (ctx) => {
     const query = (ctx.request.url.searchParams.get("query") || ctx.request.url.searchParams.get("q"))?.trim();
     let type = (ctx.request.url.searchParams.get("type") || "web").toLowerCase();
     const start = Math.max(0, parseInt(ctx.request.url.searchParams.get("start") || "0"));
-    const lang = (ctx.request.url.searchParams.get("lang") || "tr").toLowerCase();
+    const lang = (ctx.request.url.searchParams.get("lang") || "en").toLowerCase(); // Changed default lang to en
 
     if (!query) {
         ctx.response.status = 400;
-        ctx.response.body = { error: "Arama sorgusu eksik!" };
+        ctx.response.body = { error: "Search query missing!" };
         return;
     }
 
     try {
-        let searchSourceApi: string = "API Sonuçları";
+        let searchSourceApi: string = "API Results";
 
         const wikiPromise = (type === 'wiki') ?
             fetchWikiSummary(query, lang)
-            .catch((e: Error) => { console.error("API Wiki getirme hatası:", e.message); return null; })
+            .catch((e: Error) => { console.error("API Wiki fetch error:", e.message); return null; })
             : Promise.resolve(null);
 
         let mainFetchPromise: Promise<any>;
@@ -318,11 +318,11 @@ router.get("/api/search", checkApiKey, async (ctx) => {
         switch (type) {
             case "web":
                 mainFetchPromise = getAggregatedWebResults(query, start, lang);
-                searchSourceApi = "Birleşik Web (API)";
+                searchSourceApi = "Aggregated Web (API)";
                 break;
             case "image":
                 mainFetchPromise = fetchBingImages(query, lang);
-                searchSourceApi = "Bing Görselleri (API)";
+                searchSourceApi = "Bing Images (API)";
                 break;
             case "wiki":
                 mainFetchPromise = fetchWikiSummary(query, lang);
@@ -330,22 +330,22 @@ router.get("/api/search", checkApiKey, async (ctx) => {
                 break;
             case "video":
                 mainFetchPromise = fetchYoutubeResults(query, lang);
-                searchSourceApi = "YouTube Videoları (API)";
+                searchSourceApi = "YouTube Videos (API)";
                 break;
             case "news":
                 mainFetchPromise = fetchNewsResults(query, lang);
-                searchSourceApi = "Haberler (API - gnews.io)";
+                searchSourceApi = "News (API - gnews.io)";
                 break;
             default:
                 mainFetchPromise = getAggregatedWebResults(query, start, lang);
                 type = "web";
-                searchSourceApi = "Birleşik Web (API - Varsayılan)";
+                searchSourceApi = "Aggregated Web (API - Default)";
         }
 
         const [wikiResultForOtherTypes, mainResult] = await Promise.all([
             wikiPromise,
             mainFetchPromise.catch((e: Error) => {
-                console.error(`API ${type} getirme hatası:`, e.message);
+                console.error(`API ${type} fetch error:`, e.message);
                 return [];
             })
         ]);
@@ -379,23 +379,23 @@ router.get("/api/search", checkApiKey, async (ctx) => {
 
         ctx.response.body = apiResponse;
     } catch (error: any) {
-        console.error("API Arama Hatası:", error.message);
+        console.error("API Search Error:", error.message);
         ctx.response.status = 500;
-        ctx.response.body = { error: "Arama sırasında bir sunucu hatası oluştu." };
+        ctx.response.body = { error: "A server error occurred during the search." };
     }
 });
 
 router.post("/api/save-history", async (ctx) => {
-    console.log(`[Router] /api/save-history POST isteği alındı.`);
+    console.log(`[Router] /api/save-history POST request received.`);
     try {
         const body = await ctx.request.body({ type: "json" }).value;
-        console.log(`[POST /api/save-history] İstek gövdesi alındı: ${JSON.stringify(body)}`);
+        console.log(`[POST /api/save-history] Request body received: ${JSON.stringify(body)}`);
         const { title, url } = body;
 
         if (!title || !url) {
-            console.error("[POST /api/save-history] Başlık veya URL eksik.");
+            console.error("[POST /api/save-history] Title or URL missing.");
             ctx.response.status = 400;
-            ctx.response.body = { error: "Başlık veya URL eksik." };
+            ctx.response.body = { error: "Title or URL missing." };
             return;
         }
 
@@ -407,24 +407,24 @@ router.post("/api/save-history", async (ctx) => {
 
         await saveHistory(newItem);
         ctx.response.status = 200;
-        ctx.response.body = { message: "Geçmiş kaydedildi." };
+        ctx.response.body = { message: "History saved." };
     } catch (error) {
-        console.error(`[POST /api/save-history] Geçmiş kaydetme hatası: ${error.message}`);
+        console.error(`[POST /api/save-history] History save error: ${error.message}`);
         ctx.response.status = 500;
-        ctx.response.body = { error: "Geçmiş kaydedilirken bir hata oluştu." };
+        ctx.response.body = { error: "An error occurred while saving history." };
     }
 });
 
 router.get("/api/history", async (ctx) => {
     try {
         const history = await getHistory();
-        console.log(`[GET /api/history] Geçmiş başarıyla getirildi. ${history.length} öğe.`);
+        console.log(`[GET /api/history] History successfully fetched. ${history.length} items.`);
         ctx.response.status = 200;
         ctx.response.body = history;
     } catch (error) {
-        console.error(`[GET /api/history] Geçmiş getirme hatası: ${error.message}`);
+        console.error(`[GET /api/history] History fetch error: ${error.message}`);
         ctx.response.status = 500;
-        ctx.response.body = { error: "Geçmiş getirilirken bir hata oluştu." };
+        ctx.response.body = { error: "An error occurred while fetching history." };
     }
 });
 
@@ -432,26 +432,26 @@ router.post("/api/clear-history", async (ctx) => {
     try {
         await clearAllHistory();
         ctx.response.status = 200;
-        ctx.response.body = { message: "Geçmiş başarıyla temizlendi." };
+        ctx.response.body = { message: "History successfully cleared." };
     } catch (error) {
-        console.error(`[POST /api/clear-history] Geçmiş temizleme hatası: ${error.message}`);
+        console.error(`[POST /api/clear-history] History clear error: ${error.message}`);
         ctx.response.status = 500;
-        ctx.response.body = { error: "Geçmiş temizlenirken bir hata oluştu." };
+        ctx.response.body = { error: "An error occurred while clearing history." };
     }
 });
 
 router.get("/test-save-history", async (ctx) => {
     const dummyItem: HistoryItem = {
-        title: "Test Sayfası",
+        title: "Test Page",
         url: "http://example.com/test",
         timestamp: Date.now()
     };
     try {
         await saveHistory(dummyItem);
-        ctx.response.body = "Test öğesi geçmişe kaydedildi.";
+        ctx.response.body = "Test item saved to history.";
     } catch (error) {
         ctx.response.status = 500;
-        ctx.response.body = `Test öğesi kaydedilirken hata oluştu: ${error.message}`;
+        ctx.response.body = `Error saving test item: ${error.message}`;
     }
 });
 
@@ -468,7 +468,7 @@ router.get("/manifesto", async (ctx) => {
     ctx.response.body = await renderFileToString(manifestoPath);
 });
 
-router.get("/iletisim", async (ctx) => {
+router.get("/iletisim", async (ctx) => { // "iletisim" means "contact"
     const iletisimPath = `${VIEWS_ROOT}/iletisim.ejs`;
     console.log(`[Render Debug] Attempting to render: ${iletisimPath}`);
     ctx.response.body = await renderFileToString(iletisimPath, { messageSent: false });
@@ -488,22 +488,22 @@ router.get("/privacy", async (ctx) => {
 
 router.get("/image", (ctx) => {
     const query = ctx.request.url.searchParams.get("q") || "";
-    const lang = ctx.request.url.searchParams.get("lang") || "tr";
+    const lang = ctx.request.url.searchParams.get("lang") || "en"; // Changed default lang to en
     ctx.response.redirect(`/search?query=${encodeURIComponent(query)}&type=image&lang=${encodeURIComponent(lang)}`);
 });
 router.get("/wiki", (ctx) => {
     const query = ctx.request.url.searchParams.get("q") || "";
-    const lang = ctx.request.url.searchParams.get("lang") || "tr";
+    const lang = ctx.request.url.searchParams.get("lang") || "en"; // Changed default lang to en
     ctx.response.redirect(`/search?query=${encodeURIComponent(query)}&type=wiki&lang=${encodeURIComponent(lang)}`);
 });
 router.get("/video", (ctx) => {
     const query = ctx.request.url.searchParams.get("q") || "";
-    const lang = ctx.request.url.searchParams.get("lang") || "tr";
+    const lang = ctx.request.url.searchParams.get("lang") || "en"; // Changed default lang to en
     ctx.response.redirect(`/search?query=${encodeURIComponent(query)}&type=video&lang=${encodeURIComponent(lang)}`);
 });
 router.get("/news", (ctx) => {
     const query = ctx.request.url.searchParams.get("q") || "";
-    const lang = ctx.request.url.searchParams.get("lang") || "tr";
+    const lang = ctx.request.url.searchParams.get("lang") || "en"; // Changed default lang to en
     ctx.response.redirect(`/search?query=${encodeURIComponent(query)}&type=news&lang=${encodeURIComponent(lang)}`);
 });
 
@@ -520,7 +520,7 @@ app.use(async (ctx, next) => {
                 index: "index.html",
             });
         } catch (error) {
-            console.warn(`[Static Serve Error] Dosya bulunamadı veya sunulamadı: ${ctx.request.url.pathname} - ${error.message}`);
+            console.warn(`[Static Serve Error] File not found or could not be served: ${ctx.request.url.pathname} - ${error.message}`);
             await next();
         }
     } else {
@@ -530,5 +530,5 @@ app.use(async (ctx, next) => {
 });
 
 
-console.log("Sunucu başlatıldı: http://localhost:8000");
+console.log("Server started: http://localhost:8000");
 await app.listen({ port: 8000 });
