@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+    Synapic Search - Geçmiş
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .result-link:hover {
+        text-decoration: underline;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+    .overlay.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .overlay-content {
+      color: white;
+      text-align: center;
+      padding: 20px;
+      max-width: 800px;
+      width: 90%;
+    }
+    .overlay-close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 40px;
+      color: #8E8E93;
+      cursor: pointer;
+    }
+
+    #gridViewOverlay {
+        background-color: transparent;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #gridViewOverlay .modal-content {
+        background-color: #2C2C2E;
+        padding: 2.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        width: 90%;
+        max-width: 400px;
+        position: relative;
+        transform: translateY(-20px);
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        opacity: 0;
+    }
+
+    #gridViewOverlay.is-active .modal-content {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    #gridViewOverlay .overlay-close {
+        top: 1rem;
+        right: 1rem;
+        font-size: 30px;
+        color: #8E8E93;
+    }
+  </style>
+ </head>
+ <body class="bg-[#18181B] text-white min-h-screen flex flex-col">
+  <header class="flex justify-between items-center p-4">
+    <a href="/" class="text-white font-extrabold text-3xl tracking-tight">Synapic</a>
+    <div class="flex space-x-6">
+        <button aria-label="Grid view" class="text-white text-xl" id="gridViewButton">
+            <i class="fas fa-th-large"></i>
+        </button>
+        <button aria-label="Menu" class="text-white text-xl" id="menuButton">
+            <i class="fas fa-bars"></i>
+        </button>
+        <button class="text-[#8E8E93] text-sm" type="button" id="searchOptionsButton">
+            <i class="fas fa-cog text-[14px]"></i>
+            <span>Ayarlar</span>
+        </button>
+    </div>
+  </header>
+
+  <main class="flex-grow flex flex-col items-center px-4 py-8">
+    <h1 class="text-white text-4xl font-bold mb-8">Geçmiş</h1>
+
+    <div id="historyList" class="w-full max-w-[700px] space-y-4">
+        <p class="text-center text-[#8E8E93]">Geçmiş yükleniyor...</p>
+    </div>
+
+    <button class="mt-8 px-6 py-3 bg-red-700 text-white rounded-full hover:bg-red-800 transition-colors duration-200" id="clearHistoryButton">
+        Geçmişi Temizle
+    </button>
+  </main>
+
+  <footer class="flex flex-wrap justify-center gap-4 px-4 py-3 text-xs text-[#8E8E93] border-t border-[#3A3A3C] mt-auto">
+   <span class="flex items-center space-x-1">
+    <a class="hover:underline" href="/privacy">
+      Gizlilik ve Şartlar
+    </a>
+   </span>
+   <span class="ml-auto text-[#5A5A5F] select-none">
+    © Aperture Labs.
+   </span>
+  </footer>
+
+  <div id="fullScreenMenu" class="overlay">
+    <span class="overlay-close" id="closeMenuButton">&times;</span>
+    <div class="overlay-content">
+        <nav class="flex flex-col space-y-4 text-2xl">
+            <a href="/past" class="text-white hover:text-[#8E8E93]">Geçmiş</a>
+            <a href="/privacy" class="text-white hover:text-[#8E8E93]">Gizlilik ve şartlar</a>
+        </nav>
+    </div>
+  </div>
+
+  <div id="searchOptionsOverlay" class="overlay">
+    <span class="overlay-close" id="closeSearchOptionsButton">&times;</span>
+    <div class="overlay-content">
+        <h2 class="text-4xl font-bold mb-8">Arama Seçenekleri</h2>
+        <div class="space-y-4 text-xl">
+            <div class="flex items-center justify-center space-x-2">
+                <input type="checkbox" id="locationBased" class="form-checkbox h-5 w-5 text-[#5A5A5F] rounded">
+                <label for="locationBased" class="text-white">Konum Tabanlı Sonuçlar</label>
+            </div>
+            <div class="flex items-center justify-center space-x-2">
+                <label for="languageSelect" class="text-white">Dil:</label>
+                <select id="languageSelect" class="bg-[#2C2C2E] text-white p-2 rounded">
+                    <option value="tr">Türkçe</option>
+                    <option value="en">English</option>
+                    <option value="de">Deutsch</option>
+                </select>
+            </div>
+            <button class="mt-6 px-6 py-3 bg-[#5A5A5F] text-white rounded-full hover:bg-[#6A6A6F] transition-colors duration-200" id="saveSearchOptions">
+                Ayarları Kaydet
+            </button>
+        </div>
+    </div>
+  </div>
+
+  <div id="gridViewOverlay" class="overlay">
+    <div class="modal-content">
+        <span class="overlay-close" id="closeGridViewButton">&times;</span>
+        <h2 class="text-3xl font-bold mb-6 text-white">Hızlı Arama</h2>
+        <form aria-label="Quick search form" class="w-full mb-6" action="/search" method="GET">
+            <div class="relative mb-4">
+                <input class="w-full rounded-full bg-[#18181B] text-[#8E8E93] placeholder-[#8E8E93] py-3 pl-6 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#5A5A5F] focus:bg-[#3A3A3C]" 
+                       id="quickSearchInput" name="query" placeholder="Arama yap..." type="search"/>
+                <button aria-label="Quick Search Submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-[#8E8E93] hover:text-white" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <input type="hidden" id="quickSearchType" name="type" value="web">
+            <input type="hidden" name="lang" id="quickSearchLang" value="tr">
+        </form>
+        <nav class="flex flex-col space-y-3 text-xl">
+            <a href="#" data-type="web" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fas fa-globe text-[#8E8E93]"></i>
+                <span class="text-white">Web'den Ara</span>
+            </a>
+            <a href="#" data-type="image" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fas fa-image text-[#8E8E93]"></i>
+                <span class="text-white">Resimden Ara</span>
+            </a>
+            <a href="#" data-type="news" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fas fa-newspaper text-[#8E8E93]"></i>
+                <span class="text-white">Haberlerde Ara</span>
+            </a>
+            <a href="#" data-type="wiki" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fab fa-wikipedia-w text-[#8E8E93]"></i>
+                <span class="text-white">Wikipedia'da Ara</span>
+            </a>
+            <a href="#" data-type="video" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fas fa-video text-[#8E8E93]"></i>
+                <span class="text-white">Videolarda Ara</span>
+            </a>
+        </nav>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const menuButton = document.getElementById('menuButton');
+        const fullScreenMenu = document.getElementById('fullScreenMenu');
+        const closeMenuButton = document.getElementById('closeMenuButton');
+
+        const searchOptionsButton = document.getElementById('searchOptionsButton');
+        const searchOptionsOverlay = document.getElementById('searchOptionsOverlay');
+        const closeSearchOptionsButton = document.getElementById('closeSearchOptionsButton');
+        const languageSelect = document.getElementById('languageSelect');
+        const saveSearchOptionsButton = document.getElementById('saveSearchOptions');
+
+        const gridViewButton = document.getElementById('gridViewButton');
+        const gridViewOverlay = document.getElementById('gridViewOverlay');
+        const closeGridViewButton = document.getElementById('closeGridViewButton');
+        const quickSearchInput = document.getElementById('quickSearchInput');
+        const quickSearchType = document.getElementById('quickSearchType');
+        const quickSearchLang = document.getElementById('quickSearchLang');
+        const quickSearchTypeLinks = document.querySelectorAll('.quick-search-type-link');
+
+        const historyList = document.getElementById('historyList');
+        const clearHistoryButton = document.getElementById('clearHistoryButton');
+
+        function toggleOverlay(overlayElement, show) {
+            if (show) {
+                overlayElement.classList.add('is-active');
+                const modalContent = overlayElement.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.style.opacity = '1';
+                    modalContent.style.transform = 'translateY(0)';
+                }
+            } else {
+                const modalContent = overlayElement.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.style.opacity = '0';
+                    modalContent.style.transform = 'translateY(-20px)';
+                    modalContent.addEventListener('transitionend', function handler() {
+                        overlayElement.classList.remove('is-active');
+                        modalContent.removeEventListener('transitionend', handler);
+                    }, { once: true });
+                } else {
+                    overlayElement.classList.remove('is-active');
+                }
+            }
+        }
+
+        const loadLanguageSetting = () => {
+            const savedLang = localStorage.getItem('synapicSearchLang') || 'tr';
+            languageSelect.value = savedLang;
+            if (quickSearchLang) {
+                quickSearchLang.value = savedLang;
+            }
+        };
+
+        saveSearchOptionsButton.addEventListener('click', () => {
+            const selectedLang = languageSelect.value;
+            localStorage.setItem('synapicSearchLang', selectedLang);
+            loadLanguageSetting();
+            toggleOverlay(searchOptionsOverlay, false);
+            
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('lang', selectedLang);
+            window.location.href = currentUrl.toString();
+        });
+
+        menuButton.addEventListener('click', () => {
+            toggleOverlay(fullScreenMenu, true);
+        });
+        closeMenuButton.addEventListener('click', () => {
+            toggleOverlay(fullScreenMenu, false);
+        });
+        fullScreenMenu.addEventListener('click', (event) => {
+            if (event.target === fullScreenMenu) {
+                toggleOverlay(fullScreenMenu, false);
+            }
+        });
+
+        searchOptionsButton.addEventListener('click', () => {
+            toggleOverlay(searchOptionsOverlay, true);
+        });
+        closeSearchOptionsButton.addEventListener('click', () => {
+            toggleOverlay(searchOptionsOverlay, false);
+        });
+        searchOptionsOverlay.addEventListener('click', (event) => {
+            if (event.target === searchOptionsOverlay) {
+                toggleOverlay(searchOptionsOverlay, false);
+            }
+        });
+
+        gridViewButton.addEventListener('click', () => {
+            toggleOverlay(gridViewOverlay, true);
+            quickSearchInput.value = ''; 
+            quickSearchInput.focus();
+            updateQuickSearchInputPlaceholder('web');
+        });
+        closeGridViewButton.addEventListener('click', () => {
+            toggleOverlay(gridViewOverlay, false);
+        });
+        gridViewOverlay.addEventListener('click', (event) => {
+            if (event.target === gridViewOverlay) {
+                toggleOverlay(gridViewOverlay, false);
+            }
+        });
+
+        const updateQuickSearchInputPlaceholder = (type) => {
+            let placeholderText = "Arama yap...";
+            switch(type) {
+                case 'web': placeholderText = "Web'de ara..."; break;
+                case 'image': placeholderText = "Resimlerde ara..."; break;
+                case 'news': placeholderText = "Haberlerde ara..."; break;
+                case 'wiki': placeholderText = "Wikipedia'da ara..."; break;
+                case 'video': placeholderText = "Videolarda ara..."; break;
+            }
+            quickSearchInput.placeholder = placeholderText;
+        };
+
+        quickSearchTypeLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                const type = link.dataset.type;
+                quickSearchType.value = type;
+                updateQuickSearchInputPlaceholder(type);
+                quickSearchInput.focus();
+            });
+        });
+
+        const fetchHistory = async () => {
+            try {
+                const response = await fetch('/api/history');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const history = await response.json();
+                renderHistory(history);
+            } catch (error) {
+                console.error("Geçmiş getirilirken hata:", error);
+                historyList.innerHTML = '<p class="text-center text-red-500">Geçmiş yüklenirken bir hata oluştu.</p>';
+            }
+        };
+
+        const renderHistory = (history) => {
+            historyList.innerHTML = '';
+            if (history.length === 0) {
+                historyList.innerHTML = '<p class="text-center text-[#8E8E93]">Henüz geçmiş kaydı yok.</p>';
+                return;
+            }
+
+            history.forEach(item => {
+                const date = new Date(item.timestamp).toLocaleString('tr-TR', {
+                    year: 'numeric', month: 'long', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+                const historyItemHtml = `
+                    <div class="bg-[#2C2C2E] p-4 rounded-lg shadow-lg flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                        <div>
+                            <h3 class="text-lg font-semibold text-white mb-1">
+                                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="hover:underline">
+                                    ${item.title}
+                                </a>
+                            </h3>
+                            <p class="text-[#8E8E93] text-sm">${item.url}</p>
+                            <p class="text-[#5A5A5F] text-xs mt-1">Ziyaret Edildi: ${date}</p>
+                        </div>
+                        <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="mt-3 sm:mt-0 px-4 py-2 bg-[#5A5A5F] text-white rounded-full hover:bg-[#6A6A6F] transition-colors duration-200 text-sm">
+                            Tekrar Ziyaret Et
+                        </a>
+                    </div>
+                `;
+                historyList.innerHTML += historyItemHtml;
+            });
+        };
+
+        clearHistoryButton.addEventListener('click', async () => {
+            if (confirm('Geçmişi temizlemek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
+                try {
+                    const response = await fetch('/api/clear-history', { method: 'POST' });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    alert('Geçmiş başarıyla temizlendi.');
+                    fetchHistory();
+                } catch (error) {
+                    console.error("Geçmiş temizlenirken hata:", error);
+                    alert('Geçmiş temizlenirken bir hata oluştu.');
+                }
+            }
+        });
+
+        loadLanguageSetting();
+        fetchHistory();
+    });
+  </script>
+ </body>
+</html>

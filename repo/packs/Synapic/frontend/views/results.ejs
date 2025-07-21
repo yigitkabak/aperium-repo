@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+    Synapic Search - <%= query %>
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .result-link:hover {
+        text-decoration: underline;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+    .overlay.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .overlay-content {
+      color: white;
+      text-align: center;
+      padding: 20px;
+      max-width: 800px;
+      width: 90%;
+    }
+    .overlay-close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 40px;
+      color: #8E8E93;
+      cursor: pointer;
+    }
+
+    #gridViewOverlay {
+        background-color: transparent;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #gridViewOverlay .modal-content {
+        background-color: #2C2C2E;
+        padding: 2.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        width: 90%;
+        max-width: 400px;
+        position: relative;
+        transform: translateY(-20px);
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        opacity: 0;
+    }
+
+    #gridViewOverlay.is-active .modal-content {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    #gridViewOverlay .overlay-close {
+        top: 1rem;
+        right: 1rem;
+        font-size: 30px;
+        color: #8E8E93;
+    }
+  </style>
+ </head>
+ <body class="bg-[#18181B] text-white min-h-screen flex flex-col">
+  <header class="flex justify-between items-center p-4">
+    <a href="/" class="text-white font-extrabold text-3xl tracking-tight">Synapic</a>
+    <div class="flex space-x-6">
+        <button aria-label="Grid view" class="text-white text-xl" id="gridViewButton">
+            <i class="fas fa-th-large"></i>
+        </button>
+        <button aria-label="Menu" class="text-white text-xl" id="menuButton">
+            <i class="fas fa-bars"></i>
+        </button>
+        <button class="text-[#8E8E93] text-sm" type="button" id="searchOptionsButton">
+            <i class="fas fa-cog text-[14px]"></i>
+            <span>Ayarlar</span>
+        </button>
+    </div>
+  </header>
+
+  <main class="flex-grow flex flex-col items-center px-4 py-8">
+    <form aria-label="Search form" class="w-full max-w-[700px] mb-8" role="search" action="/search" method="GET" id="mainSearchForm">
+        <label class="sr-only" for="search-results">
+            Search
+        </label>
+        <div class="relative">
+            <input class="w-full rounded-full bg-[#2C2C2E] text-[#8E8E93] placeholder-[#8E8E93] py-3 pl-6 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#5A5A5F] focus:bg-[#3A3A3C]" 
+                   id="search-results" name="query" placeholder="Hadi getirelim ..." type="search" value="<%= query %>"/>
+            <button aria-label="Search" class="absolute right-4 top-1/2 -translate-y-1/2 text-[#8E8E93] hover:text-white" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <input type="hidden" name="lang" id="mainSearchLang" value="<%= lang %>">
+    </form>
+
+    <div class="w-full max-w-[700px] text-sm text-[#8E8E93] mb-6 flex justify-end items-center">
+        <div class="flex space-x-4">
+            <a href="/search?query=<%= encodeURIComponent(query) %>&type=web&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'web' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Web</a>
+            <a href="/search?query=<%= encodeURIComponent(query) %>&type=image&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'image' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Görsel</a>
+            <a href="/search?query=<%= encodeURIComponent(query) %>&type=video&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'video' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Video</a>
+            <a href="/search?query=<%= encodeURIComponent(query) %>&type=news&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'news' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Haber</a>
+            <a href="/search?query=<%= encodeURIComponent(query) %>&type=wiki&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'wiki' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Wiki</a>
+        </div>
+    </div>
+
+    <% if (errorMessage) { %>
+        <div class="bg-red-800 text-white p-4 rounded-lg w-full max-w-[700px] mb-6">
+            <p>Hata: <%= errorMessage %></p>
+            <p>Lütfen daha sonra tekrar deneyin veya farklı bir arama sorgusu kullanın.</p>
+        </div>
+    <% } %>
+
+    <% if (type === 'web' && results.length > 0) { %>
+        <div class="w-full max-w-[700px] space-y-6">
+            <% results.forEach(result => { %>
+                <div class="bg-[#2C2C2E] p-4 rounded-lg shadow-lg search-result-item">
+                    <a href="<%= result.link %>" target="_blank" rel="noopener noreferrer" class="text-[#8E8E93] text-sm block mb-1 result-link flex items-center">
+                        <% 
+                            let domain = '';
+                            try {
+                                const urlObj = new URL(result.link);
+                                domain = urlObj.hostname;
+                            } catch (e) {
+                                console.warn("Invalid URL for favicon:", result.link, e);
+                                domain = result.displayUrl;
+                            }
+                            const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=16`;
+                        %>
+                        <img src="<%= faviconUrl %>" class="inline-block w-4 h-4 mr-1 -mt-0.5" alt="Site icon" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'currentColor\' viewBox=\'0 0 20 20\'%3E%3Cpath fill-rule=\'evenodd\' d=\'M10 18a8 8 0 100-16 8 8 0 000 16zM5 9a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z\' clip-rule=\'evenodd\'%3E%3C/path%3E%3C/svg%3E'; this.classList.add('text-[#8E8E93]'); this.classList.remove('w-4', 'h-4'); this.style.width='16px'; this.style.height='16px';">
+                        <%= result.displayUrl %>
+                    </a>
+                    <h2 class="text-xl font-bold text-white mb-2">
+                        <a href="<%= result.link %>" target="_blank" rel="noopener noreferrer" class="hover:underline">
+                            <%= result.title %>
+                        </a>
+                    </h2>
+                    <p class="text-[#E0E0E0] text-sm leading-relaxed"><%= result.snippet %></p>
+                </div>
+            <% }); %>
+        </div>
+    <% } else if (type === 'image' && images.length > 0) { %>
+        <div class="w-full max-w-[700px]">
+            <h2 class="text-xl font-bold text-white mb-4">Görsel Sonuçları</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                <% images.forEach(image => { %>
+                    <div class="bg-[#2C2C2E] rounded-lg overflow-hidden shadow-lg flex flex-col search-result-item">
+                        <a href="<%= image.link %>" target="_blank" rel="noopener noreferrer" class="block h-32 w-full overflow-hidden">
+                            <img src="<%= image.thumbnail || image.image %>" alt="<%= image.title %>" class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-200">
+                        </a>
+                        <div class="p-2 text-xs text-[#E0E0E0] truncate">
+                            <%= image.title %>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    <% } else if (type === 'video' && videos.length > 0) { %>
+        <div class="w-full max-w-[700px]">
+            <h2 class="text-xl font-bold text-white mb-4">Video Sonuçları</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <% videos.forEach(video => { %>
+                    <div class="bg-[#2C2C2E] rounded-lg overflow-hidden shadow-lg search-result-item">
+                        <a href="<%= video.url %>" target="_blank" rel="noopener noreferrer" class="block">
+                            <img src="<%= video.thumbnail %>" alt="<%= video.title %>" class="w-full h-40 object-cover">
+                        </a>
+                        <div class="p-3">
+                            <h3 class="text-lg font-semibold text-white mb-1">
+                                <a href="<%= video.url %>" target="_blank" rel="noopener noreferrer" class="hover:underline">
+                                    <%= video.title %>
+                                </a>
+                            </h3>
+                            <p class="text-[#8E8E93] text-sm"><%= video.source %></p>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    <% } else if (type === 'news' && newsResults.length > 0) { %>
+        <div class="w-full max-w-[700px]">
+            <h2 class="text-xl font-bold text-white mb-4">Haber Sonuçları</h2>
+            <div class="space-y-6">
+                <% newsResults.forEach(news => { %>
+                    <div class="bg-[#2C2C2E] p-4 rounded-lg shadow-lg flex flex-col sm:flex-row items-start space-y-3 sm:space-y-0 sm:space-x-4 search-result-item">
+                        <% if (news.image) { %>
+                            <img src="<%= news.image %>" alt="<%= news.title %>" class="w-full sm:w-32 h-24 object-cover rounded-md flex-shrink-0">
+                        <% } %>
+                        <div class="flex-grow">
+                            <h3 class="text-lg font-semibold text-white mb-1">
+                                <a href="<%= news.link %>" target="_blank" rel="noopener noreferrer" class="hover:underline">
+                                    <%= news.title %>
+                                </a>
+                            </h3>
+                            <p class="text-[#E0E0E0] text-sm mb-2"><%= news.snippet %></p>
+                            <div class="text-[#8E8E93] text-xs">
+                                <span><%= news.source %></span>
+                                <% if (news.date) { %>
+                                    <span class="ml-2">| <%= new Date(news.date).toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    <% } else if (type === 'wiki' && wiki) { %>
+        <div class="bg-[#2C2C2E] p-4 rounded-lg shadow-lg w-full max-w-[700px] mb-6 search-result-item">
+            <h2 class="text-xl font-bold text-white mb-2">Wikipedia: <%= wiki.title %></h2>
+            <% if (wiki.img) { %>
+                <img src="<%= wiki.img %>" alt="<%= wiki.title %>" class="float-right ml-4 mb-2 w-32 h-auto rounded-lg object-cover">
+            <% } %>
+            <p class="text-[#E0E0E0] text-sm leading-relaxed mb-3"><%= wiki.summary %></p>
+            <a href="<%= wiki.url %>" target="_blank" rel="noopener noreferrer" class="text-[#8E8E93] hover:underline text-xs">
+                Wikipedia'da daha fazlasını oku <i class="fas fa-external-link-alt ml-1"></i>
+            </a>
+            <div class="clear-both"></div>
+        </div>
+    <% } else { %>
+        <div class="text-[#8E8E93] text-lg mt-8">
+            <p>Üzgünüz, aramanız için sonuç bulunamadı.</p>
+            <p class="text-sm mt-2">Farklı bir arama sorgusu veya türü deneyin.</p>
+        </div>
+    <% } %>
+
+    <% if (type === 'web' || type === 'news') { %>
+        <div class="flex justify-between w-full max-w-[700px] mt-8">
+            <% if (start > 0) { %>
+                <a href="/search?query=<%= encodeURIComponent(query) %>&type=<%= type %>&start=<%= Math.max(0, start - 10) %>&lang=<%= lang %>" class="px-4 py-2 bg-[#2C2C2E] text-white rounded-full hover:bg-[#3A3A3C] transition-colors duration-200">
+                    <i class="fas fa-arrow-left mr-2"></i>Önceki
+                </a>
+            <% } else { %>
+                <span class="px-4 py-2 bg-[#2C2C2E] text-[#5A5A5F] rounded-full cursor-not-allowed"><i class="fas fa-arrow-left mr-2"></i>Önceki</span>
+            <% } %>
+
+            <% if ((type === 'web' && results.length === 10) || (type === 'news' && newsResults.length === 10)) { %>
+                <a href="/search?query=<%= encodeURIComponent(query) %>&type=<%= type %>&start=<%= start + 10 %>&lang=<%= lang %>" class="px-4 py-2 bg-[#2C2C2E] text-white rounded-full hover:bg-[#3A3A3C] transition-colors duration-200">
+                    Sonraki<i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            <% } else { %>
+                <span class="px-4 py-2 bg-[#2C2C2E] text-[#5A5A5F] rounded-full cursor-not-allowed">Sonraki<i class="fas fa-arrow-right ml-2"></i></span>
+            <% } %>
+        </div>
+    <% } %>
+
+  </main>
+
+  <footer class="flex flex-wrap justify-center gap-4 px-4 py-3 text-xs text-[#8E8E93] border-t border-[#3A3A3C] mt-auto">
+   <a class="font-bold hover:underline" href="#">
+    Yükselt
+   </a>
+   <span class="flex items-center space-x-1">
+    <a class="hover:underline" href="/privacy">Gizlilik ve Şartlar</a>
+   </span>
+   <span class="ml-auto text-[#5A5A5F] select-none">
+    © Aperture Labs.
+   </span>
+  </footer>
+
+  <div id="fullScreenMenu" class="overlay">
+    <span class="overlay-close" id="closeMenuButton">&times;</span>
+    <div class="overlay-content">
+        <nav class="flex flex-col space-y-4 text-2xl">
+            <a href="/past" class="text-white hover:text-[#8E8E93]">Geçmiş</a>
+            <a href="#" class="text-white hover:text-[#8E8E93]">Gizlilik ve Şartlar</a>
+        </nav>
+    </div>
+  </div>
+
+  <div id="searchOptionsOverlay" class="overlay">
+    <span class="overlay-close" id="closeSearchOptionsButton">&times;</span>
+    <div class="overlay-content">
+        <h2 class="text-4xl font-bold mb-8">Arama Seçenekleri</h2>
+        <div class="space-y-4 text-xl">
+            <div class="flex items-center justify-center space-x-2">
+                <input type="checkbox" id="locationBased" class="form-checkbox h-5 w-5 text-[#5A5A5F] rounded">
+                <label for="locationBased" class="text-white">Konum Tabanlı Sonuçlar</label>
+            </div>
+            <div class="flex items-center justify-center space-x-2">
+                <label for="languageSelect" class="text-white">Dil:</label>
+                <select id="languageSelect" class="bg-[#2C2C2E] text-white p-2 rounded">
+                    <option value="tr">Türkçe</option>
+                    <option value="en">English</option>
+                    <option value="de">Deutsch</option>
+                </select>
+            </div>
+            <button class="mt-6 px-6 py-3 bg-[#5A5A5F] text-white rounded-full hover:bg-[#6A6A6F] transition-colors duration-200" id="saveSearchOptions">
+                Ayarları Kaydet
+            </button>
+        </div>
+    </div>
+  </div>
+
+  <div id="gridViewOverlay" class="overlay">
+    <div class="modal-content">
+        <span class="overlay-close" id="closeGridViewButton">&times;</span>
+        <h2 class="text-3xl font-bold mb-6 text-white">Hızlı Arama</h2>
+        <form aria-label="Quick search form" class="w-full mb-6" action="/search" method="GET">
+            <div class="relative mb-4">
+                <input class="w-full rounded-full bg-[#18181B] text-[#8E8E93] placeholder-[#8E8E93] py-3 pl-6 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#5A5A5F] focus:bg-[#3A3A3C]" 
+                       id="quickSearchInput" name="query" placeholder="Arama yap..." type="search"/>
+                <button aria-label="Quick Search Submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-[#8E8E93] hover:text-white" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <input type="hidden" id="quickSearchType" name="type" value="web">
+            <input type="hidden" name="lang" id="quickSearchLang" value="tr">
+        </form>
+        <nav class="flex flex-col space-y-3 text-xl">
+            <a href="#" data-type="web" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fas fa-globe text-[#8E8E93]"></i>
+                <span class="text-white">Web'den Ara</span>
+            </a>
+            <a href="#" data-type="image" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fas fa-image text-[#8E8E93]"></i>
+                <span class="text-white">Resimden Ara</span>
+            </a>
+            <a href="#" data-type="news" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fas fa-newspaper text-[#8E8E93]"></i>
+                <span class="text-white">Haberlerde Ara</span>
+            </a>
+            <a href="#" data-type="wiki" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fab fa-wikipedia-w text-[#8E8E93]"></i>
+                <span class="text-white">Wikipedia'da Ara</span>
+            </a>
+            <a href="#" data-type="video" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fas fa-video text-[#8E8E93]"></i>
+                <span class="text-white">Videolarda Ara</span>
+            </a>
+        </nav>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const menuButton = document.getElementById('menuButton');
+        const fullScreenMenu = document.getElementById('fullScreenMenu');
+        const closeMenuButton = document.getElementById('closeMenuButton');
+
+        const searchOptionsButton = document.getElementById('searchOptionsButton');
+        const searchOptionsOverlay = document.getElementById('searchOptionsOverlay');
+        const closeSearchOptionsButton = document.getElementById('closeSearchOptionsButton');
+        const languageSelect = document.getElementById('languageSelect');
+        const saveSearchOptionsButton = document.getElementById('saveSearchOptions');
+
+        const gridViewButton = document.getElementById('gridViewButton');
+        const gridViewOverlay = document.getElementById('gridViewOverlay');
+        const closeGridViewButton = document.getElementById('closeGridViewButton');
+        const quickSearchInput = document.getElementById('quickSearchInput');
+        const quickSearchType = document.getElementById('quickSearchType');
+        const quickSearchLang = document.getElementById('quickSearchLang');
+        const quickSearchTypeLinks = document.querySelectorAll('.quick-search-type-link');
+
+        const mainSearchForm = document.getElementById('mainSearchForm');
+        const mainSearchLang = document.getElementById('mainSearchLang');
+        const mainSearchInput = document.getElementById('search-results'); 
+
+        function toggleOverlay(overlayElement, show) {
+            if (show) {
+                overlayElement.classList.add('is-active');
+                const modalContent = overlayElement.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.style.opacity = '1';
+                    modalContent.style.transform = 'translateY(0)';
+                }
+            } else {
+                const modalContent = overlayElement.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.style.opacity = '0';
+                    modalContent.style.transform = 'translateY(-20px)';
+                    modalContent.addEventListener('transitionend', function handler() {
+                        overlayElement.classList.remove('is-active');
+                        modalContent.removeEventListener('transitionend', handler);
+                    }, { once: true });
+                } else {
+                    overlayElement.classList.remove('is-active');
+                }
+            }
+        }
+
+        const loadLanguageSetting = () => {
+            const savedLang = localStorage.getItem('synapicSearchLang') || 'tr';
+            languageSelect.value = savedLang;
+            mainSearchLang.value = savedLang;
+            quickSearchLang.value = savedLang;
+        };
+
+        saveSearchOptionsButton.addEventListener('click', () => {
+            const selectedLang = languageSelect.value;
+            localStorage.setItem('synapicSearchLang', selectedLang);
+            loadLanguageSetting(); 
+            toggleOverlay(searchOptionsOverlay, false); 
+            
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('lang', selectedLang);
+            window.location.href = currentUrl.toString();
+        });
+
+        menuButton.addEventListener('click', () => {
+            toggleOverlay(fullScreenMenu, true);
+        });
+        closeMenuButton.addEventListener('click', () => {
+            toggleOverlay(fullScreenMenu, false);
+        });
+        fullScreenMenu.addEventListener('click', (event) => {
+            if (event.target === fullScreenMenu) {
+                toggleOverlay(fullScreenMenu, false);
+            }
+        });
+
+        if (searchOptionsButton) {
+            searchOptionsButton.addEventListener('click', () => {
+                toggleOverlay(searchOptionsOverlay, true);
+            });
+            closeSearchOptionsButton.addEventListener('click', () => {
+                toggleOverlay(searchOptionsOverlay, false);
+            });
+            searchOptionsOverlay.addEventListener('click', (event) => {
+                if (event.target === searchOptionsOverlay) {
+                    toggleOverlay(searchOptionsOverlay, false);
+                }
+            });
+        } else {
+            console.warn("searchOptionsButton bulunamadı. Ayarlar butonu işlevsiz olabilir.");
+        }
+
+        gridViewButton.addEventListener('click', () => {
+            toggleOverlay(gridViewOverlay, true);
+            const currentMainQuery = mainSearchInput.value || '';
+            quickSearchInput.value = currentMainQuery;
+            quickSearchInput.focus();
+            updateQuickSearchInputPlaceholder('web'); 
+        });
+        closeGridViewButton.addEventListener('click', () => {
+            toggleOverlay(gridViewOverlay, false);
+        });
+        gridViewOverlay.addEventListener('click', (event) => {
+            if (event.target === gridViewOverlay) {
+                toggleOverlay(gridViewOverlay, false);
+            }
+        });
+
+        const updateQuickSearchInputPlaceholder = (type) => {
+            let placeholderText = "Arama yap...";
+            switch(type) {
+                case 'web': placeholderText = "Web'de ara..."; break;
+                case 'image': placeholderText = "Resimlerde ara..."; break;
+                case 'news': placeholderText = "Haberlerde ara..."; break;
+                case 'wiki': placeholderText = "Wikipedia'da ara..."; break;
+                case 'video': placeholderText = "Videolarda ara..."; break;
+            }
+            quickSearchInput.placeholder = placeholderText;
+        };
+
+        quickSearchTypeLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                const type = link.dataset.type;
+                quickSearchType.value = type;
+                updateQuickSearchInputPlaceholder(type);
+                quickSearchInput.focus();
+            });
+        });
+
+        const saveSearchToHistory = async () => {
+            const query = "<%= query %>";
+            const type = "<%= type %>";
+            const lang = "<%= lang %>";
+
+            if (query && query.trim() !== '') {
+                const title = `Arama: ${query} (${type} araması)`;
+                const url = `/search?query=${encodeURIComponent(query)}&type=${encodeURIComponent(type)}&lang=${encodeURIComponent(lang)}`;
+
+                try {
+                    const response = await fetch('/api/save-history', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ title, url }),
+                        keepalive: true 
+                    });
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Geçmişe kaydetme API hatası:', response.status, errorText);
+                    } else {
+                        console.log('Geçmişe kaydetme isteği başarıyla gönderildi.');
+                    }
+                } catch (error) {
+                    console.error('Geçmişe kaydetme sırasında ağ hatası:', error);
+                }
+            } else {
+                console.log('Boş sorgu, geçmişe kaydedilmiyor.');
+            }
+        };
+
+        loadLanguageSetting();
+        saveSearchToHistory();
+    });
+  </script>
+ </body>
+</html>
