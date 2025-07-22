@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+    Synapic Search
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      display: flex;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+    .overlay.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .slide-from-right-overlay .overlay-content {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 320px;
+        background-color: #1c1c1e;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        color: white;
+        text-align: left;
+        overflow-y: auto;
+    }
+
+    .slide-from-right-overlay.is-active .overlay-content {
+        transform: translateX(0);
+    }
+
+    .slide-from-right-overlay .overlay-close {
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        color: #8E8E93;
+        cursor: pointer;
+        z-index: 1001;
+        background: none;
+        border: none;
+        padding: 0;
+    }
+    .slide-from-right-overlay .overlay-close i {
+        font-size: 2rem; /* Adjusted for icon size */
+    }
+
+    #gridViewOverlay {
+        background-color: rgba(0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+    }
+
+    #gridViewOverlay .modal-content {
+        background-color: #2C2C2E;
+        padding: 2.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        width: 90%;
+        max-width: 400px;
+        position: relative;
+        transform: translateY(-20px);
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        opacity: 0;
+    }
+
+    #gridViewOverlay.is-active .modal-content {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    #gridViewOverlay .overlay-close {
+        position: absolute; /* Added position absolute for proper placement */
+        top: 1rem;
+        right: 1rem;
+        color: #8E8E93;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+    }
+    #gridViewOverlay .overlay-close i {
+        font-size: 30px; /* Adjusted for icon size */
+    }
+
+    .menu-item {
+        padding: 0.75rem 0.5rem;
+        margin-bottom: 0.5rem;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        color: #E0E0E0;
+        transition: background-color 0.2s ease-in-out;
+    }
+    .menu-item:hover {
+        background-color: #3A3A3C;
+    }
+    .menu-item i {
+        margin-right: 0.75rem;
+        font-size: 1.25rem;
+        color: #8E8E93;
+    }
+    .menu-section-title {
+        color: #8E8E93;
+        font-size: 0.875rem;
+        font-weight: bold;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        padding-left: 0.5rem;
+        text-transform: uppercase;
+    }
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 24px;
+    }
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #3A3A3C;
+        -webkit-transition: .4s;
+        transition: .4s;
+        border-radius: 24px;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+    input:checked + .slider:before {
+        -webkit-transform: translateX(16px);
+        -ms-transform: translateX(16px);
+        transform: translateX(16px);
+    }
+    .theme-option {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        background-color: #3A3A3C;
+        color: #E0E0E0;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .theme-option.selected {
+        background-color: #5A5A5F;
+        font-weight: bold;
+    }
+    .search-history-item {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        border-radius: 0.5rem;
+        transition: background-color 0.2s;
+    }
+    .search-history-item:hover {
+        background-color: #3A3A3C;
+    }
+    .search-history-item i {
+        margin-right: 0.75rem;
+        color: #8E8E93;
+    }
+  </style>
+ </head>
+ <body class="bg-[#18181B] text-white min-h-screen flex flex-col">
+  <header class="flex justify-end p-4 space-x-6">
+   <button aria-label="Grid view" class="text-white text-xl" id="gridViewButton">
+    <i class="fas fa-th-large">
+    </i>
+   </button>
+   <button aria-label="Menu" class="text-white text-xl" id="menuButton">
+    <i class="fas fa-bars">
+    </i>
+   </button>
+  </header>
+  <main class="flex-grow flex flex-col items-center px-4">
+   <div class="flex items-center space-x-4 mt-12 max-w-[600px] w-full justify-center">
+    <h1 class="text-white font-extrabold text-[96px] leading-[128px] font-sans tracking-tight">
+      Synapic
+    </h1>
+   </div>
+   <div class="w-full max-w-[600px] relative">
+       <form aria-label="Search form" class="w-full" role="search" action="/search" method="GET" id="mainSearchForm">
+        <label class="sr-only" for="search">
+          Search
+        </label>
+        <div class="relative flex items-center bg-[#2C2C2E] rounded-full px-4 py-2 focus-within:ring-1 focus-within:ring-[#5A5A5F] border border-[#3A3A3C]">
+         <input class="flex-grow bg-transparent text-[#E0E0E0] placeholder-[#8E8E93] text-base focus:outline-none" id="search" name="query" placeholder="Let's get it ..." type="search"/>
+         <button type="button" id="clearSearchButton" class="text-[#8E8E93] hover:text-white ml-2 focus:outline-none hidden">
+            <i class="fas fa-times"></i>
+         </button>
+         <div class="h-6 w-px bg-[#5A5A5F] mx-2"></div>
+         <button aria-label="Search" class="text-[#8E8E93] hover:text-white ml-2" type="submit">
+          <i class="fas fa-search">
+          </i>
+         </button>
+        </div>
+        <input type="hidden" name="lang" id="mainSearchLang" value="en">
+       </form>
+       <div id="searchHistoryContainer" class="absolute top-full left-0 w-full bg-[#2C2C2E] rounded-2xl shadow-lg z-10 mt-2 hidden">
+            <div class="p-4">
+                <h3 class="text-sm font-bold text-[#8E8E93] mb-2">Recent Searches</h3>
+                <div id="recentSearchesList" class="space-y-2">
+                    </div>
+            </div>
+        </div>
+   </div>
+   <button class="mt-3 flex items-center space-x-1 text-[#8E8E93] text-xs" type="button" id="searchOptionsButton">
+    <i class="fas fa-cog text-[14px]">
+    </i>
+    <span>
+      Search Options
+    </span>
+   </button>
+  </main>
+  <footer class="flex flex-wrap justify-center gap-4 px-4 py-3 text-xs text-[#8E8E93] border-t border-[#3A3A3C]">
+   <span class="flex items-center space-x-1">
+    <a class="hover:underline" href="/privacy">
+      Privacy & Terms
+    </a>
+   </span>
+   <span class="ml-auto text-[#5A5A5F] select-none">
+    © Aperture Labs.
+   </span>
+  </footer>
+
+  <div id="controlCenterOverlay" class="overlay slide-from-right-overlay">
+    <button class="overlay-close" id="closeControlCenterButton" aria-label="Close">
+        <i class="fas fa-times"></i>
+    </button>
+    <div class="overlay-content">
+        <h2 class="text-2xl font-bold mb-6 text-white">Control Center</h2>
+        
+        <a href="/privacy" class="menu-item">
+            <i class="fa-solid fa-lock"></i>
+            <span>Privacy & Terms</span>
+        </a>
+        <a href="/past" class="menu-item">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>History</span>
+        </a>
+    </div>
+  </div>
+
+  <div id="searchOptionsOverlay" class="overlay slide-from-right-overlay">
+    <button class="overlay-close" id="closeSearchOptionsButton" aria-label="Close">
+        <i class="fas fa-times"></i>
+    </button>
+    <div class="overlay-content">
+        <h2 class="text-2xl font-bold mb-6 text-white">Search Options</h2>
+        <div class="space-y-4 text-xl">
+            <div class="flex items-center justify-between menu-item">
+                <label for="locationBased" class="text-white">Location-Based Results</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="locationBased">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="flex items-center justify-between menu-item">
+                <label for="languageSelect" class="text-white">Language:</label>
+                <select id="languageSelect" class="bg-[#2C2C2E] text-white p-2 rounded">
+                    <option value="tr">Turkish</option>
+                    <option value="en">English</option>
+                    <option value="de">Deutsch</option>
+                </select>
+            </div>
+            <button class="mt-6 px-6 py-3 bg-[#5A5A5F] text-white rounded-full hover:bg-[#6A6A6F] transition-colors duration-200" id="saveSearchOptions">
+                Save Settings
+            </button>
+        </div>
+    </div>
+  </div>
+
+  <div id="gridViewOverlay" class="overlay">
+    <button class="overlay-close" id="closeGridViewButton" aria-label="Close">
+        <i class="fas fa-times"></i>
+    </button>
+    <div class="modal-content">
+        <h2 class="text-3xl font-bold mb-6 text-white">Quick Search</h2>
+        <form aria-label="Quick search form" class="w-full mb-6" action="/search" method="GET">
+            <div class="relative mb-4">
+                <input class="w-full rounded-full bg-[#18181B] text-[#8E8E93] placeholder-[#8E8E93] py-3 pl-6 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#5A5A5F] focus:bg-[#3A3A3C]" 
+                       id="quickSearchInput" name="query" placeholder="Search..." type="search"/>
+                <button aria-label="Quick Search Submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-[#8E8E93] hover:text-white" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <input type="hidden" id="quickSearchType" name="type" value="web">
+            <input type="hidden" name="lang" id="quickSearchLang" value="en">
+        </form>
+        <nav class="flex flex-col space-y-3 text-xl">
+            <a href="#" data-type="web" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fas fa-globe text-[#8E8E93]"></i>
+                <span class="text-white">Search Web</span>
+            </a>
+            <a href="#" data-type="image" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fas fa-image text-[#8E8E93]"></i>
+                <span class="text-white">Search Images</span>
+            </a>
+            <a href="#" data-type="news" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fas fa-newspaper text-[#8E8E93]"></i>
+                <span class="text-white">Search News</span>
+            </a>
+            <a href="#" data-type="wiki" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fab fa-wikipedia-w text-[#8E8E93]"></i>
+                <span class="text-white">Search Wikipedia</span>
+            </a>
+            <a href="#" data-type="video" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
+                <i class="fas fa-video text-[#8E8E93]"></i>
+                <span class="text-white">Search Videos</span>
+            </a>
+        </nav>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const menuButton = document.getElementById('menuButton');
+        const controlCenterOverlay = document.getElementById('controlCenterOverlay');
+        const closeControlCenterButton = document.getElementById('closeControlCenterButton');
+
+        const searchOptionsButton = document.getElementById('searchOptionsButton');
+        const searchOptionsOverlay = document.getElementById('searchOptionsOverlay');
+        const closeSearchOptionsButton = document.getElementById('closeSearchOptionsButton');
+        const languageSelect = document.getElementById('languageSelect');
+        const saveSearchOptionsButton = document.getElementById('saveSearchOptions');
+        const locationBasedToggle = document.getElementById('locationBased');
+
+        const gridViewButton = document.getElementById('gridViewButton');
+        const gridViewOverlay = document.getElementById('gridViewOverlay');
+        const closeGridViewButton = document.getElementById('closeGridViewButton');
+        const quickSearchInput = document.getElementById('quickSearchInput');
+        const quickSearchType = document.getElementById('quickSearchType');
+        const quickSearchLang = document.getElementById('quickSearchLang');
+        const quickSearchTypeLinks = document.querySelectorAll('.quick-search-type-link');
+
+        const mainSearchForm = document.getElementById('mainSearchForm');
+        const mainSearchLang = document.getElementById('mainSearchLang');
+        const mainSearchInput = document.getElementById('search'); 
+        const clearSearchButton = document.getElementById('clearSearchButton');
+
+        const searchHistoryContainer = document.getElementById('searchHistoryContainer');
+        const recentSearchesList = document.getElementById('recentSearchesList');
+
+        function toggleOverlay(overlayElement, show) {
+            const content = overlayElement.querySelector('.overlay-content, .modal-content');
+
+            if (show) {
+                if (content) {
+                    content.style.transform = '';
+                    content.style.opacity = '';
+                }
+                overlayElement.classList.add('is-active');
+            } else {
+                if (overlayElement.classList.contains('slide-from-right-overlay')) {
+                    content.style.transform = 'translateX(100%)';
+                    content.addEventListener('transitionend', function handler() {
+                        overlayElement.classList.remove('is-active');
+                        content.style.transform = '';
+                        content.removeEventListener('transitionend', handler);
+                    }, { once: true });
+                } else if (content) {
+                    content.style.opacity = '0';
+                    content.style.transform = 'translateY(-20px)';
+                    content.addEventListener('transitionend', function handler() {
+                        overlayElement.classList.remove('is-active');
+                        content.style.opacity = '';
+                        content.style.transform = '';
+                        content.removeEventListener('transitionend', handler);
+                    }, { once: true });
+                } else {
+                    overlayElement.classList.remove('is-active');
+                }
+            }
+        }
+
+        const loadLanguageSetting = () => {
+            const savedLang = localStorage.getItem('synapicSearchLang') || 'en';
+            languageSelect.value = savedLang;
+            mainSearchLang.value = savedLang;
+            quickSearchLang.value = savedLang;
+        };
+
+        const loadLocationBasedSetting = () => {
+            const savedLocationBased = localStorage.getItem('synapicLocationBased') === 'true';
+            locationBasedToggle.checked = savedLocationBased;
+        };
+
+        saveSearchOptionsButton.addEventListener('click', () => {
+            const selectedLang = languageSelect.value;
+            localStorage.setItem('synapicSearchLang', selectedLang);
+            
+            const isLocationBased = locationBasedToggle.checked;
+            localStorage.setItem('synapicLocationBased', isLocationBased);
+
+            loadLanguageSetting();
+            loadLocationBasedSetting();
+            toggleOverlay(searchOptionsOverlay, false);
+        });
+
+        menuButton.addEventListener('click', () => {
+            toggleOverlay(controlCenterOverlay, true);
+        });
+        closeControlCenterButton.addEventListener('click', () => {
+            toggleOverlay(controlCenterOverlay, false);
+        });
+        controlCenterOverlay.addEventListener('click', (event) => {
+            if (event.target === controlCenterOverlay) {
+                toggleOverlay(controlCenterOverlay, false);
+            }
+        });
+
+        if (searchOptionsButton) {
+            searchOptionsButton.addEventListener('click', () => {
+                toggleOverlay(searchOptionsOverlay, true);
+            });
+            closeSearchOptionsButton.addEventListener('click', () => {
+                toggleOverlay(searchOptionsOverlay, false);
+            });
+            searchOptionsOverlay.addEventListener('click', (event) => {
+                if (event.target === searchOptionsOverlay) {
+                    toggleOverlay(searchOptionsOverlay, false);
+                }
+            });
+        } else {
+            console.warn("searchOptionsButton not found. Settings button may be non-functional.");
+        }
+
+        gridViewButton.addEventListener('click', () => {
+            toggleOverlay(gridViewOverlay, true);
+            const currentMainQuery = mainSearchInput.value || '';
+            quickSearchInput.value = currentMainQuery;
+            quickSearchInput.focus();
+            updateQuickSearchInputPlaceholder('web'); 
+        });
+        closeGridViewButton.addEventListener('click', () => {
+            toggleOverlay(gridViewOverlay, false);
+        });
+        gridViewOverlay.addEventListener('click', (event) => {
+            if (event.target === gridViewOverlay) {
+                toggleOverlay(gridViewOverlay, false);
+            }
+        });
+
+        const updateQuickSearchInputPlaceholder = (type) => {
+            let placeholderText = "Search...";
+            switch(type) {
+                case 'web': placeholderText = "Search the web..."; break;
+                case 'image': placeholderText = "Search images..."; break;
+                case 'news': placeholderText = "Search news..."; break;
+                case 'wiki': placeholderText = "Search Wikipedia..."; break;
+                case 'video': placeholderText = "Search videos..."; break;
+            }
+            quickSearchInput.placeholder = placeholderText;
+        };
+
+        quickSearchTypeLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                const type = link.dataset.type;
+                quickSearchType.value = type;
+                updateQuickSearchInputPlaceholder(type);
+                quickSearchInput.focus();
+            });
+        });
+
+        function getDeviceId() {
+            let deviceId = localStorage.getItem('synapicDeviceId');
+            if (!deviceId) {
+                const randomDigits = Math.floor(100000 + Math.random() * 900000); 
+                deviceId = `apm_${randomDigits}`;
+                localStorage.setItem('synapicDeviceId', deviceId);
+            }
+            return deviceId;
+        }
+
+        const saveSearchToHistory = async () => {
+            const query = mainSearchInput.value;
+            const type = "web";
+            const lang = mainSearchLang.value;
+            const deviceId = getDeviceId();
+
+            if (query && query.trim() !== '') {
+                const title = `${query}`;
+                const url = `/search?query=${encodeURIComponent(query)}&type=${encodeURIComponent(type)}&lang=${encodeURIComponent(lang)}`;
+
+                try {
+                    const response = await fetch('/api/save-history', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ title, url, deviceId }),
+                        keepalive: true 
+                    });
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('History save API error:', response.status, errorText);
+                    } else {
+                        console.log('History save request successfully sent.');
+                    }
+                } catch (error) {
+                    console.error('Network error during history save:', error);
+                }
+            }
+        };
+
+        mainSearchForm.addEventListener('submit', saveSearchToHistory);
+
+        const toggleClearButton = () => {
+            if (mainSearchInput.value.length > 0) {
+                clearSearchButton.classList.remove('hidden');
+            } else {
+                clearSearchButton.classList.add('hidden');
+            }
+        };
+
+        mainSearchInput.addEventListener('input', toggleClearButton);
+        clearSearchButton.addEventListener('click', () => {
+            mainSearchInput.value = '';
+            toggleClearButton();
+            searchHistoryContainer.classList.add('hidden');
+            mainSearchInput.focus();
+        });
+
+        const fetchRecentSearches = async () => {
+            const deviceId = getDeviceId();
+            try {
+                const response = await fetch('/api/history', {
+                    headers: {
+                        'X-Device-ID': deviceId
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const history = await response.json();
+                renderRecentSearches(history);
+            } catch (error) {
+                console.error("Error fetching recent searches:", error);
+                searchHistoryContainer.classList.add('hidden');
+            }
+        };
+
+        const renderRecentSearches = (history) => {
+            recentSearchesList.innerHTML = '';
+            if (history.length === 0) {
+                searchHistoryContainer.classList.add('hidden');
+                return;
+            }
+
+            searchHistoryContainer.classList.remove('hidden');
+            history.slice(0, 5).forEach(item => {
+                const historyItemHtml = `
+                    <a href="#" data-query="${item.title.replace(/Search: (.*?) \((.*?)\ssearch\)/, '$1')}" class="search-history-item text-[#E0E0E0] text-sm">
+                        <i class="fas fa-search"></i>
+                        <span>${item.title.replace(/Search: (.*?) \((.*?)\ssearch\)/, '$1')}</span>
+                    </a>
+                `;
+                recentSearchesList.innerHTML += historyItemHtml;
+            });
+        };
+
+        mainSearchInput.addEventListener('focus', fetchRecentSearches);
+        mainSearchInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                searchHistoryContainer.classList.add('hidden');
+            }, 200);
+        });
+
+        recentSearchesList.addEventListener('click', (event) => {
+            const clickedLink = event.target.closest('.search-history-item');
+            if (clickedLink) {
+                event.preventDefault();
+                mainSearchInput.value = clickedLink.dataset.query;
+                mainSearchForm.submit();
+                searchHistoryContainer.classList.add('hidden');
+            }
+        });
+
+        loadLanguageSetting();
+        loadLocationBasedSetting();
+        toggleClearButton();
+    });
+  </script>
+ </body>
+</html>
