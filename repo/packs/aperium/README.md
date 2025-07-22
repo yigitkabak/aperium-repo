@@ -1,77 +1,101 @@
 # Aperium: Modern Package Manager
 
-Aperium is a product of the Aperture Labs Ecosystem.
+Aperium is not just a package installer, but also a tool that allows you to easily manage and share the custom packages you develop. It is designed to make the package installation process in the Node.js ecosystem more efficient, simple, and user-friendly, thereby saving developers time. Aperium allows you to install both external dependencies (packages downloaded from npm) and your own custom packages. With Aperium, you can easily install not only popular open-source packages but also modules from your own projects.
 
-Aperium is not just a package installer but also a tool that allows you to easily manage the custom packages you develop and share. Designed to make the package installation process in the Node.js ecosystem more efficient, simple, and user-friendly, it helps developers save time. Aperium allows you to install both external dependencies (packages downloaded from npm) and your own custom packages. With Aperium, you can easily install not only popular open-source packages but also modules from your own projects.
-
-To upload a package to Aperium, you can create a pull request on our GitHub repository.
+To upload a package to Aperium, you can create a pull request to our GitHub repository.
 
 ## Key Features of the Project:
 
-Aperium doesn't just install packages from npm but also allows you to download and include your own custom packages in your projects. Using the aper command, you can upload modules that you've developed or projects you want to share with others.
+Aperium not only allows you to install packages from npm, but also enables you to download your own custom packages and include them in your projects. Using the `aper` command, you can easily install the modules you have developed or the projects you want to share with others.
 
 ## How to Use Aperium:
 
-Aperium operates with two main commands: naper and aper. These commands serve different purposes.
+Aperium works with two main commands: `naper` and `aper`. These commands serve different purposes.
 
-naper Command:
-```bash
+### naper Command:
+```
 naper install <packageName>
 ```
-This command installs external dependencies from npm. You can use this command to install popular packages like express, lodash, etc.
-```bash
+This command installs external dependencies from npm. You can use this command to install popular packages such as `express` and `lodash`.
+```
 naper install express
 ```
-When this command is run, only the necessary output is displayed, and unnecessary information is hidden. After the installation is complete, a success message will be shown to the user:
-```bash
+When this command is run, only the necessary output is displayed and unnecessary information is hidden. After the installation is complete, a success message is displayed to the user:
+```
 🔍 Installing express package... ✅ express has been successfully installed.
 ```
 
 ---
 
-## Aper Command:
+### Aper Command:
 
-One of the most powerful features of Aperium is that it allows users to install their custom-developed packages. The aper command enables you to include not only external dependencies but also your own developed and shared modules in your project.
-```bash
-aper install <packageName>
+One of Aperium's most powerful features is that it allows users to install their own custom-developed packages. The `aper` command allows you to include not only external dependencies but also modules you have developed and shared in your project.
+
+**To install a custom `.apr` package:**
+
+NOTE: The `.apr` system only works on Arch, Debian and Nixos based systems.
 ```
-With this command, you can install your custom packages and share them with others. Once you develop a module or project, you can use aperium to upload and share it with other developers.
+aper install <fileName.apr>
+```
+With this command, you can install your own `.apr` packages and share them with others. When you develop a module or project, you can easily share it with other developers using Aperium.
 
-By running this command, the following process occurs:
+When this command is run, the following process occurs:
 
-The package is retrieved from the aperium repository.
+* The `.apr` package is opened and its contents are analyzed.
+* Your system is detected.
+* If the package has already been installed or an existing installation is detected, you are informed.
+* The relevant installation scripts (or package lists for NixOS) are run.
+* The installation output will display the package name and a success message.
 
-If successful, it’s copied to your project directory.
+**To install a template from the Aperium repository:**
+```
+aper install -r <template_name>
+```
+This command allows you to download and install a specific template from Aperium's default GitHub repository.
+```
+aper install -r Synapic
+```
 
-The installation output will show the package name and success message.
+**To create a new `.apr` package:**
+```
+aper new <package_name>
+```
+This command helps you create a new `.apr` package where you can define platform-specific (Debian, Arch, NixOS) installation scripts or package lists.
 
-# What should you do to download it?
+**To view the contents of an `.apr` package:**
+```
+aper view <fileName.apr>
+```
+This command allows you to view the installation scripts and configurations inside an `.apr` file, so you can see what it does before installing a package.
 
-First, you need to clone our GitHub repo.
-```bash
+---
+
+## Downloading and Using Aperium:
+
+First, you need to clone our GitHub repository:
+```
 git clone https://github.com/yigitkabak/aperium
 ```
-secondly, you must download the npm modules.
-```bash
+Then, navigate to the project directory and install the necessary npm modules and build the project:
+```
 cd aperium
-npm install express fs-extra multer typescript ts-node
+npm install
 npm run build
 ```
-Finally, you should download our npm package.
-```bash
-npm install aperium
+
+That's it! You can now use the `aper` command directly from your terminal.
+
+---
+
+## Huh Details System
+
+Use the `.huh` file extension, another product of Yiğit KABAK, via Aperium.
+
 ```
-
-That's all there is to it!
-
-# Huh details system
-
-Use the .huh file extension, another product of Aperture Labs. via aperium.
-
-```bash
 huhinfo file.huh
 ```
+This command will provide a detailed analysis of your `.huh` file.
 
-this command will give you a detailed analysis of your huh file.
+---
 
-## For more information, you can use the command ```aperium```.
+For more information, simply use the `aper help` command in your terminal.
