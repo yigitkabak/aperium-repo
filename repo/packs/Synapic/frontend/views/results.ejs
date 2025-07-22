@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
  <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
   <title>
@@ -27,6 +26,9 @@
       background-color: rgba(0, 0, 0, 0.7);
       z-index: 1000;
       display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
@@ -35,41 +37,24 @@
       opacity: 1;
       visibility: visible;
     }
-
-    .slide-from-right-overlay .overlay-content {
-        position: absolute;
-        top: 0;
-        right: 0;
-        height: 100%;
-        width: 320px;
-        background-color: #1c1c1e;
-        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
-        transform: translateX(100%);
-        transition: transform 0.3s ease-in-out;
-        display: flex;
-        flex-direction: column;
-        padding: 1rem;
-        color: white;
-        text-align: left;
-        overflow-y: auto;
+    .overlay-content {
+      color: white;
+      text-align: center;
+      padding: 20px;
+      max-width: 800px;
+      width: 90%;
     }
-
-    .slide-from-right-overlay.is-active .overlay-content {
-        transform: translateX(0);
-    }
-
-    .slide-from-right-overlay .overlay-close {
-        position: absolute;
-        top: 1rem;
-        right: 1.5rem;
-        font-size: 2rem;
-        color: #8E8E93;
-        cursor: pointer;
-        z-index: 1001;
+    .overlay-close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 40px;
+      color: #8E8E93;
+      cursor: pointer;
     }
 
     #gridViewOverlay {
-        background-color: rgba(0, 0, 0, 0.7);
+        background-color: transparent;
         justify-content: center;
         align-items: center;
     }
@@ -98,108 +83,6 @@
         font-size: 30px;
         color: #8E8E93;
     }
-    .menu-item {
-        padding: 0.75rem 0.5rem;
-        margin-bottom: 0.5rem;
-        border-radius: 0.5rem;
-        display: flex;
-        align-items: center;
-        color: #E0E0E0;
-        transition: background-color 0.2s ease-in-out;
-    }
-    .menu-item:hover {
-        background-color: #3A3A3C;
-    }
-    .menu-item i {
-        margin-right: 0.75rem;
-        font-size: 1.25rem;
-        color: #8E8E93;
-    }
-    .menu-section-title {
-        color: #8E8E93;
-        font-size: 0.875rem;
-        font-weight: bold;
-        margin-top: 1.5rem;
-        margin-bottom: 0.75rem;
-        padding-left: 0.5rem;
-        text-transform: uppercase;
-    }
-    .toggle-switch {
-        position: relative;
-        display: inline-block;
-        width: 40px;
-        height: 24px;
-    }
-    .toggle-switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #3A3A3C;
-        -webkit-transition: .4s;
-        transition: .4s;
-        border-radius: 24px;
-    }
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 16px;
-        width: 16px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        -webkit-transition: .4s;
-        transition: .4s;
-        border-radius: 50%;
-    }
-    input:checked + .slider {
-        background-color: #2196F3;
-    }
-    input:focus + .slider {
-        box-shadow: 0 0 1px #2196F3;
-    }
-    input:checked + .slider:before {
-        -webkit-transform: translateX(16px);
-        -ms-transform: translateX(16px);
-        transform: translateX(16px);
-    }
-    .theme-option {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        background-color: #3A3A3C;
-        color: #E0E0E0;
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-    .theme-option.selected {
-        background-color: #5A5A5F;
-        font-weight: bold;
-    }
-    .search-history-item {
-        display: flex;
-        align-items: center;
-        padding: 0.5rem 1rem;
-        cursor: pointer;
-        border-radius: 0.5rem;
-        transition: background-color 0.2s;
-    }
-    .search-history-item:hover {
-        background-color: #3A3A3C;
-    }
-    .search-history-item i {
-        margin-right: 0.75rem;
-        color: #8E8E93;
-    }
   </style>
  </head>
  <body class="bg-[#18181B] text-white min-h-screen flex flex-col">
@@ -220,57 +103,27 @@
   </header>
 
   <main class="flex-grow flex flex-col items-center px-4 py-8">
-    <div class="w-full max-w-[700px] relative mb-8">
-        <form aria-label="Search form" class="w-full" role="search" action="/search" method="GET" id="mainSearchForm">
-            <label class="sr-only" for="search-results">
-                Search
-            </label>
-            <div class="relative flex items-center bg-[#2C2C2E] rounded-full px-4 py-2 focus-within:ring-1 focus-within:ring-[#5A5A5F] border border-[#3A3A3C]">
-                <input class="flex-grow bg-transparent text-[#E0E0E0] placeholder-[#8E8E93] text-base focus:outline-none" 
-                       id="search-results" name="query" placeholder="Let's get it..." type="search" value="<%= query %>"/>
-                <button type="button" id="clearSearchButton" class="text-[#8E8E93] hover:text-white ml-2 focus:outline-none hidden">
-                    <i class="fas fa-times"></i>
-                </button>
-                <div class="h-6 w-px bg-[#5A5A5F] mx-2"></div>
-                <button aria-label="Search" class="text-[#8E8E93] hover:text-white ml-2" type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-            <input type="hidden" name="lang" id="mainSearchLang" value="<%= lang %>">
-        </form>
-
-        <div id="searchHistoryContainer" class="absolute top-full left-0 w-full bg-[#2C2C2E] rounded-2xl shadow-lg z-10 mt-2 hidden">
-            <div class="p-4">
-                <h3 class="text-sm font-bold text-[#8E8E93] mb-2">Recent Searches</h3>
-                <div id="recentSearchesList" class="space-y-2">
-                    <!-- Recent search items will be loaded here -->
-                </div>
-            </div>
+    <form aria-label="Search form" class="w-full max-w-[700px] mb-8" role="search" action="/search" method="GET" id="mainSearchForm">
+        <label class="sr-only" for="search-results">
+            Search
+        </label>
+        <div class="relative">
+            <input class="w-full rounded-full bg-[#2C2C2E] text-[#8E8E93] placeholder-[#8E8E93] py-3 pl-6 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#5A5A5F] focus:bg-[#3A3A3C]" 
+                   id="search-results" name="query" placeholder="Let's get it..." type="search" value="<%= query %>"/>
+            <button aria-label="Search" class="absolute right-4 top-1/2 -translate-y-1/2 text-[#8E8E93] hover:text-white" type="submit">
+                <i class="fas fa-search"></i>
+            </button>
         </div>
-    </div>
+        <input type="hidden" name="lang" id="mainSearchLang" value="<%= lang %>">
+    </form>
 
-    <div class="w-full max-w-[700px] text-sm text-[#8E8E93] mb-6 flex justify-start items-center border-b border-[#3A3A3C] pb-2">
-        <div class="flex space-x-4 -mb-2">
-            <a href="/search?query=<%= encodeURIComponent(query) %>&type=web&lang=<%= lang %>" class="px-3 py-1 rounded-full relative group">
-                <span class="<%= type === 'web' ? 'text-white' : 'text-[#8E8E93] hover:text-white' %>">Web</span>
-                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-[#F59E0B] transform scale-x-0 <%= type === 'web' ? 'scale-x-100' : '' %> transition-transform duration-200 group-hover:scale-x-100"></span>
-            </a>
-            <a href="/search?query=<%= encodeURIComponent(query) %>&type=image&lang=<%= lang %>" class="px-3 py-1 rounded-full relative group">
-                <span class="<%= type === 'image' ? 'text-white' : 'text-[#8E8E93] hover:text-white' %>">Image</span>
-                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-[#F59E0B] transform scale-x-0 <%= type === 'image' ? 'scale-x-100' : '' %> transition-transform duration-200 group-hover:scale-x-100"></span>
-            </a>
-            <a href="/search?query=<%= encodeURIComponent(query) %>&type=video&lang=<%= lang %>" class="px-3 py-1 rounded-full relative group">
-                <span class="<%= type === 'video' ? 'text-white' : 'text-[#8E8E93] hover:text-white' %>">Video</span>
-                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-[#F59E0B] transform scale-x-0 <%= type === 'video' ? 'scale-x-100' : '' %> transition-transform duration-200 group-hover:scale-x-100"></span>
-            </a>
-            <a href="/search?query=<%= encodeURIComponent(query) %>&type=news&lang=<%= lang %>" class="px-3 py-1 rounded-full relative group">
-                <span class="<%= type === 'news' ? 'text-white' : 'text-[#8E8E93] hover:text-white' %>">News</span>
-                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-[#F59E0B] transform scale-x-0 <%= type === 'news' ? 'scale-x-100' : '' %> transition-transform duration-200 group-hover:scale-x-100"></span>
-            </a>
-            <a href="/search?query=<%= encodeURIComponent(query) %>&type=wiki&lang=<%= lang %>" class="px-3 py-1 rounded-full relative group">
-                <span class="<%= type === 'wiki' ? 'text-white' : 'text-[#8E8E93] hover:text-white' %>">Wiki</span>
-                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-[#F59E0B] transform scale-x-0 <%= type === 'wiki' ? 'scale-x-100' : '' %> transition-transform duration-200 group-hover:scale-x-100"></span>
-            </a>
+    <div class="w-full max-w-[700px] text-sm text-[#8E8E93] mb-6 flex justify-end items-center">
+        <div class="flex space-x-4">
+            <a href="/search?query=<%= encodeURIComponent(query) %>&type=web&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'web' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Web</a>
+            <a href="/search?query=<%= encodeURIComponent(query) %>&type=image&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'image' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Image</a>
+            <a href="/search?query=<%= encodeURIComponent(query) %>&type=video&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'video' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Video</a>
+            <a href="/search?query=<%= encodeURIComponent(query) %>&type=news&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'news' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">News</a>
+            <a href="/search?query=<%= encodeURIComponent(query) %>&type=wiki&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'wiki' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Wiki</a>
         </div>
     </div>
 
@@ -423,40 +276,31 @@
    </span>
   </footer>
 
-  <div id="controlCenterOverlay" class="overlay slide-from-right-overlay">
-    <span class="overlay-close" id="closeControlCenterButton">&times;</span>
+  <div id="fullScreenMenu" class="overlay">
+    <span class="overlay-close" id="closeMenuButton">&times;</span>
     <div class="overlay-content">
-        <h2 class="text-2xl font-bold mb-6 text-white">Control Center</h2>
-        
-        <a href="/privacy" class="menu-item">
-            <i class="fa-solid fa-lock"></i>
-            <span>Privacy & Terms</span>
-        </a>
-        <a href="/past" class="menu-item">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-            <span>History</span>
-        </a>
+        <nav class="flex flex-col space-y-4 text-2xl">
+            <a href="/past" class="text-white hover:text-[#8E8E93]">History</a>
+            <a href="#" class="text-white hover:text-[#8E8E93]">Privacy & Terms</a>
+        </nav>
     </div>
   </div>
 
-  <div id="searchOptionsOverlay" class="overlay slide-from-right-overlay">
+  <div id="searchOptionsOverlay" class="overlay">
     <span class="overlay-close" id="closeSearchOptionsButton">&times;</span>
     <div class="overlay-content">
-        <h2 class="text-2xl font-bold mb-6 text-white">Search Options</h2>
+        <h2 class="text-4xl font-bold mb-8">Search Options</h2>
         <div class="space-y-4 text-xl">
-            <div class="flex items-center justify-between menu-item">
+            <div class="flex items-center justify-center space-x-2">
+                <input type="checkbox" id="locationBased" class="form-checkbox h-5 w-5 text-[#5A5A5F] rounded">
                 <label for="locationBased" class="text-white">Location-Based Results</label>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="locationBased">
-                    <span class="slider"></span>
-                </label>
             </div>
-            <div class="flex items-center justify-between menu-item">
+            <div class="flex items-center justify-center space-x-2">
                 <label for="languageSelect" class="text-white">Language:</label>
                 <select id="languageSelect" class="bg-[#2C2C2E] text-white p-2 rounded">
                     <option value="tr">Turkish</option>
                     <option value="en">English</option>
-                    <option value="de">Deutsch</option>
+                    <option value="de">German</option>
                 </select>
             </div>
             <button class="mt-6 px-6 py-3 bg-[#5A5A5F] text-white rounded-full hover:bg-[#6A6A6F] transition-colors duration-200" id="saveSearchOptions">
@@ -479,7 +323,7 @@
                 </button>
             </div>
             <input type="hidden" id="quickSearchType" name="type" value="web">
-            <input type="hidden" name="lang" id="quickSearchLang" value="en">
+            <input type="hidden" name="lang" id="quickSearchLang" value="tr">
         </form>
         <nav class="flex flex-col space-y-3 text-xl">
             <a href="#" data-type="web" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-[#3A3A3C] transition-colors duration-200 quick-search-type-link">
@@ -509,15 +353,14 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
         const menuButton = document.getElementById('menuButton');
-        const controlCenterOverlay = document.getElementById('controlCenterOverlay');
-        const closeControlCenterButton = document.getElementById('closeControlCenterButton');
+        const fullScreenMenu = document.getElementById('fullScreenMenu');
+        const closeMenuButton = document.getElementById('closeMenuButton');
 
         const searchOptionsButton = document.getElementById('searchOptionsButton');
         const searchOptionsOverlay = document.getElementById('searchOptionsOverlay');
         const closeSearchOptionsButton = document.getElementById('closeSearchOptionsButton');
         const languageSelect = document.getElementById('languageSelect');
         const saveSearchOptionsButton = document.getElementById('saveSearchOptions');
-        const locationBasedToggle = document.getElementById('locationBased');
 
         const gridViewButton = document.getElementById('gridViewButton');
         const gridViewOverlay = document.getElementById('gridViewOverlay');
@@ -530,34 +373,26 @@
         const mainSearchForm = document.getElementById('mainSearchForm');
         const mainSearchLang = document.getElementById('mainSearchLang');
         const mainSearchInput = document.getElementById('search-results'); 
-        const clearSearchButton = document.getElementById('clearSearchButton');
-
-        const searchHistoryContainer = document.getElementById('searchHistoryContainer');
-        const recentSearchesList = document.getElementById('recentSearchesList');
 
         function toggleOverlay(overlayElement, show) {
             if (show) {
                 overlayElement.classList.add('is-active');
+                const modalContent = overlayElement.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.style.opacity = '1';
+                    modalContent.style.transform = 'translateY(0)';
+                }
             } else {
-                if (overlayElement.classList.contains('slide-from-right-overlay')) {
-                    const content = overlayElement.querySelector('.overlay-content');
-                    content.style.transform = 'translateX(100%)';
-                    content.addEventListener('transitionend', function handler() {
+                const modalContent = overlayElement.querySelector('.modal-content');
+                if (modalContent) {
+                    modalContent.style.opacity = '0';
+                    modalContent.style.transform = 'translateY(-20px)';
+                    modalContent.addEventListener('transitionend', function handler() {
                         overlayElement.classList.remove('is-active');
-                        content.removeEventListener('transitionend', handler);
+                        modalContent.removeEventListener('transitionend', handler);
                     }, { once: true });
                 } else {
-                    const modalContent = overlayElement.querySelector('.modal-content');
-                    if (modalContent) {
-                        modalContent.style.opacity = '0';
-                        modalContent.style.transform = 'translateY(-20px)';
-                        modalContent.addEventListener('transitionend', function handler() {
-                            overlayElement.classList.remove('is-active');
-                            modalContent.removeEventListener('transitionend', handler);
-                        }, { once: true });
-                    } else {
-                        overlayElement.classList.remove('is-active');
-                    }
+                    overlayElement.classList.remove('is-active');
                 }
             }
         }
@@ -569,21 +404,11 @@
             quickSearchLang.value = savedLang;
         };
 
-        const loadLocationBasedSetting = () => {
-            const savedLocationBased = localStorage.getItem('synapicLocationBased') === 'true';
-            locationBasedToggle.checked = savedLocationBased;
-        };
-
         saveSearchOptionsButton.addEventListener('click', () => {
             const selectedLang = languageSelect.value;
             localStorage.setItem('synapicSearchLang', selectedLang);
-            
-            const isLocationBased = locationBasedToggle.checked;
-            localStorage.setItem('synapicLocationBased', isLocationBased);
-
-            loadLanguageSetting();
-            loadLocationBasedSetting();
-            toggleOverlay(searchOptionsOverlay, false);
+            loadLanguageSetting(); 
+            toggleOverlay(searchOptionsOverlay, false); 
             
             const currentUrl = new URL(window.location.href);
             currentUrl.searchParams.set('lang', selectedLang);
@@ -591,14 +416,14 @@
         });
 
         menuButton.addEventListener('click', () => {
-            toggleOverlay(controlCenterOverlay, true);
+            toggleOverlay(fullScreenMenu, true);
         });
-        closeControlCenterButton.addEventListener('click', () => {
-            toggleOverlay(controlCenterOverlay, false);
+        closeMenuButton.addEventListener('click', () => {
+            toggleOverlay(fullScreenMenu, false);
         });
-        controlCenterOverlay.addEventListener('click', (event) => {
-            if (event.target === controlCenterOverlay) {
-                toggleOverlay(controlCenterOverlay, false);
+        fullScreenMenu.addEventListener('click', (event) => {
+            if (event.target === fullScreenMenu) {
+                toggleOverlay(fullScreenMenu, false);
             }
         });
 
@@ -656,24 +481,14 @@
             });
         });
 
-        function getDeviceId() {
-            let deviceId = localStorage.getItem('synapicDeviceId');
-            if (!deviceId) {
-                const randomDigits = Math.floor(100000 + Math.random() * 900000); 
-                deviceId = `apm_${randomDigits}`;
-                localStorage.setItem('synapicDeviceId', deviceId);
-            }
-            return deviceId;
-        }
-
         const saveSearchToHistory = async () => {
-            const query = "<%= query %>"; 
-            const type = "<%= type %>";   
-            const lang = "<%= lang %>";  
-            const deviceId = getDeviceId();
+            const query = "<%= query %>";
+            const type = "<%= type %>";
+            const lang = "<%= lang %>";
 
             if (query && query.trim() !== '') {
-                const title = query; 
+                const title = `${query}`;
+
                 const url = `/search?query=${encodeURIComponent(query)}&type=${encodeURIComponent(type)}&lang=${encodeURIComponent(lang)}`;
 
                 try {
@@ -682,101 +497,25 @@
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ title, url, deviceId }),
+                        body: JSON.stringify({ title, url }),
                         keepalive: true 
                     });
                     if (!response.ok) {
                         const errorText = await response.text();
                         console.error('History save API error:', response.status, errorText);
                     } else {
-                        console.log('History save request successfully sent.');
+                        console.log('History save request sent successfully.');
                     }
                 } catch (error) {
                     console.error('Network error during history save:', error);
                 }
-            }
-        };
-
-        saveSearchToHistory();
-
-        const toggleClearButton = () => {
-            if (mainSearchInput.value.length > 0) {
-                clearSearchButton.classList.remove('hidden');
             } else {
-                clearSearchButton.classList.add('hidden');
+                console.log('Empty query, not saving to history.');
             }
         };
-
-        mainSearchInput.addEventListener('input', toggleClearButton);
-        clearSearchButton.addEventListener('click', () => {
-            mainSearchInput.value = '';
-            toggleClearButton();
-            searchHistoryContainer.classList.add('hidden');
-            mainSearchInput.focus();
-        });
-
-        const fetchRecentSearches = async () => {
-            const deviceId = getDeviceId();
-            try {
-                const response = await fetch('/api/history', {
-                    headers: {
-                        'X-Device-ID': deviceId
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const history = await response.json();
-                renderRecentSearches(history);
-            } catch (error) {
-                console.error("Error fetching recent searches:", error);
-                searchHistoryContainer.classList.add('hidden');
-            }
-        };
-
-        const renderRecentSearches = (history) => {
-            recentSearchesList.innerHTML = '';
-            if (history.length === 0) {
-                searchHistoryContainer.classList.add('hidden');
-                return;
-            }
-
-            searchHistoryContainer.classList.remove('hidden');
-            history.slice(0, 5).forEach(item => {
-                const displayQuery = item.title;
-                const historyItemHtml = `
-                    <a href="#" data-query="${displayQuery}" class="search-history-item text-[#E0E0E0] text-sm">
-                        <i class="fas fa-search"></i>
-                        <span>${displayQuery}</span>
-                    </a>
-                `;
-                recentSearchesList.innerHTML += historyItemHtml;
-            });
-        };
-
-        mainSearchInput.addEventListener('focus', fetchRecentSearches);
-        mainSearchInput.addEventListener('blur', (event) => {
-            if (searchHistoryContainer.contains(event.relatedTarget)) {
-                return;
-            }
-            setTimeout(() => {
-                searchHistoryContainer.classList.add('hidden');
-            }, 200);
-        });
-
-        recentSearchesList.addEventListener('click', (event) => {
-            const clickedLink = event.target.closest('.search-history-item');
-            if (clickedLink) {
-                event.preventDefault();
-                mainSearchInput.value = clickedLink.dataset.query;
-                mainSearchForm.submit();
-                searchHistoryContainer.classList.add('hidden');
-            }
-        });
 
         loadLanguageSetting();
-        loadLocationBasedSetting();
-        toggleClearButton();
+        saveSearchToHistory();
     });
   </script>
  </body>
