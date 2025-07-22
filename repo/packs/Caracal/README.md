@@ -2,7 +2,7 @@
 
 Tired of wondering if you're getting the internet speeds you pay for? Concerned about your data being shared with third parties every time you run a speed test?
 
-Introducing Caracal, the revolutionary internet measurement system designed by Aperture Labs. Caracal puts you in complete control, offering a truly private and precise way to understand your internet performance.
+Introducing Caracal, the revolutionary internet measurement system designed by Yiğit KABAK. Caracal puts you in complete control, offering a truly private and precise way to understand your internet performance.
 
 # What Does Caracal Do?
 
@@ -20,4 +20,4 @@ Caracal is more than just a speed test; it's a commitment to your digital privac
 
 ---
 
-**A Proud Product of Aperture Labs.**
+**A Proud Product of Yiğit KABAK**
