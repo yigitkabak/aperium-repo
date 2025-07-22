@@ -508,7 +508,7 @@
             const deviceId = getDeviceId();
 
             if (query && query.trim() !== '') {
-                const title = `Search: ${query} (${type} search)`;
+                const title = `${query}`;
                 const url = `/search?query=${encodeURIComponent(query)}&type=${encodeURIComponent(type)}&lang=${encodeURIComponent(lang)}`;
 
                 try {
