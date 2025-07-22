@@ -2,10 +2,10 @@
 <html lang="en">
  <head>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <meta charset="utf--8"/>
+  <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
   <title>
-    Synapic Search - <%= query %>
+    <%= query %> - Synapic Search
   </title>
   <script src="https://cdn.tailwindcss.com">
   </script>
@@ -70,7 +70,7 @@
         padding: 0;
     }
     .slide-from-right-overlay .overlay-close i {
-        font-size: 2rem; /* Adjusted for icon size */
+        font-size: 2rem;
     }
 
     #gridViewOverlay {
@@ -98,7 +98,7 @@
     }
 
     #gridViewOverlay .overlay-close {
-        position: absolute; /* Added position absolute for proper placement */
+        position: absolute;
         top: 1rem;
         right: 1rem;
         color: #8E8E93;
@@ -108,7 +108,7 @@
         padding: 0;
     }
     #gridViewOverlay .overlay-close i {
-        font-size: 30px; /* Adjusted for icon size */
+        font-size: 30px;
     }
 
     .menu-item {
@@ -213,6 +213,152 @@
         margin-right: 0.75rem;
         color: #8E8E93;
     }
+    .search-bar-container {
+        position: relative;
+        width: 100%;
+        max-width: 700px;
+        margin-bottom: 2rem;
+    }
+    .search-input-wrapper {
+        display: flex;
+        align-items: center;
+        background-color: #2C2C2E;
+        border-radius: 9999px;
+        padding: 0.5rem 1rem;
+        border: 1px solid #3A3A3C;
+        height: 48px;
+    }
+    .search-input-wrapper:focus-within {
+        outline: 1px solid #5A5A5F;
+    }
+    .search-input {
+        flex-grow: 1;
+        background-color: transparent;
+        color: #E0E0E0;
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+        border: none;
+        outline: none;
+        padding: 0;
+        margin: 0;
+        min-width: 0; /* Ensures input can shrink */
+    }
+    .search-input::placeholder {
+        color: #8E8E93;
+    }
+    .clear-search-button {
+        color: #8E8E93;
+        font-size: 1.25rem;
+        margin-left: 0.5rem;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        flex-shrink: 0; /* Prevents button from shrinking */
+    }
+    .search-separator {
+        width: 1px;
+        height: 24px;
+        background-color: #5A5A5F;
+        margin-left: 0.75rem;
+        margin-right: 0.75rem;
+        flex-shrink: 0; /* Prevents separator from shrinking */
+    }
+    .search-submit-button {
+        color: #8E8E93;
+        font-size: 1.25rem;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        flex-shrink: 0; /* Prevents button from shrinking */
+    }
+    .search-options-bar {
+        position: relative;
+        display: flex;
+        width: 100%;
+        max-width: 700px;
+        justify-content: flex-start;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-left: 0;
+        margin-top: 0;
+        overflow-x: auto; /* Allow horizontal scrolling on small screens */
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+        scrollbar-width: none; /* Hide scrollbar for Firefox */
+        -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+    }
+    .search-options-bar::-webkit-scrollbar {
+        display: none; /* Hide scrollbar for Chrome, Safari, Opera */
+    }
+    .search-option-item {
+        color: #8E8E93;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+        border-radius: 9999px;
+        transition: color 0.2s ease-in-out;
+        position: relative;
+        text-decoration: none;
+        white-space: nowrap; /* Prevent text wrapping */
+    }
+    .search-option-item:hover {
+        color: #E0E0E0;
+    }
+    .search-option-item.selected {
+        color: #E0E0E0;
+        font-weight: bold;
+    }
+    .underline-indicator {
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        height: 3px;
+        background-color: #FFD700;
+        transition: width 0.3s ease, transform 0.3s ease;
+        border-radius: 2px;
+    }
+
+    #searchResultsSuggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: #2C2C2E;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        z-index: 10;
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 0.5rem;
+        display: none;
+        padding: 0.5rem 0;
+    }
+
+    #searchResultsSuggestions.active {
+        display: block;
+    }
+
+    #searchResultsSuggestions .suggestion-item {
+        padding: 0.75rem 1rem;
+        color: #E0E0E0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    #searchResultsSuggestions .suggestion-item:hover {
+        background-color: #3A3A3C;
+    }
+
+    #searchResultsSuggestions .suggestion-item i {
+        color: #8E8E93;
+    }
   </style>
  </head>
  <body class="bg-[#18181B] text-white min-h-screen flex flex-col">
@@ -233,25 +379,27 @@
   </header>
 
   <main class="flex-grow flex flex-col items-center px-4 py-8">
-    <div class="w-full max-w-[700px] mb-8 relative">
+    <div class="search-bar-container">
         <form aria-label="Search form" class="w-full" role="search" action="/search" method="GET" id="mainSearchForm">
             <label class="sr-only" for="search-results">
                 Search
             </label>
-            <div class="relative flex items-center bg-[#2C2C2E] rounded-full px-4 py-2 focus-within:ring-1 focus-within:ring-[#5A5A5F] border border-[#3A3A3C]">
-                <input class="flex-grow bg-transparent text-[#E0E0E0] placeholder-[#8E8E93] text-base focus:outline-none" 
-                       id="search-results" name="query" placeholder="Let's get it..." 
+            <div class="search-input-wrapper">
+                <input class="search-input"
+                       id="search-results" name="query" placeholder="Let's get it ..."
                        type="search" value="<%= query %>"/>
-                <button type="button" id="clearSearchButton" class="text-[#8E8E93] hover:text-white ml-2 focus:outline-none hidden">
+                <button type="button" id="clearSearchButton" class="clear-search-button hidden">
                     <i class="fas fa-times"></i>
                 </button>
-                <div class="h-6 w-px bg-[#5A5A5F] mx-2"></div>
-                <button aria-label="Search" class="text-[#8E8E93] hover:text-white ml-2" type="submit">
+                <div class="search-separator"></div>
+                <button aria-label="Search" class="search-submit-button" type="submit">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
             <input type="hidden" name="lang" id="mainSearchLang" value="<%= lang %>">
         </form>
+
+        <div id="searchResultsSuggestions" class="hidden"></div>
 
         <div id="searchHistoryContainer" class="absolute top-full left-0 w-full bg-[#2C2C2E] rounded-2xl shadow-lg z-10 mt-2 hidden">
             <div class="p-4">
@@ -262,14 +410,13 @@
         </div>
     </div>
 
-    <div class="w-full max-w-[700px] text-sm text-[#8E8E93] mb-6 flex justify-end items-center">
-        <div class="flex space-x-4">
-            <a href="/search?query=<%= encodeURIComponent(query) %>&type=web&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'web' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Web</a>
-            <a href="/search?query=<%= encodeURIComponent(query) %>&type=image&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'image' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Image</a>
-            <a href="/search?query=<%= encodeURIComponent(query) %>&type=video&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'video' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Video</a>
-            <a href="/search?query=<%= encodeURIComponent(query) %>&type=news&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'news' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">News</a>
-            <a href="/search?query=<%= encodeURIComponent(query) %>&type=wiki&lang=<%= lang %>" class="px-3 py-1 rounded-full <%= type === 'wiki' ? 'bg-[#5A5A5F] text-white' : 'bg-[#2C2C2E] hover:bg-[#3A3A3C]' %>">Wiki</a>
-        </div>
+    <div class="search-options-bar" id="searchOptionsBar">
+        <a href="/search?query=<%= encodeURIComponent(query) %>&type=web&lang=<%= lang %>" class="search-option-item <%= type === 'web' ? 'selected' : '' %>" data-type="web">Web</a>
+        <a href="/search?query=<%= encodeURIComponent(query) %>&type=image&lang=<%= lang %>" class="search-option-item <%= type === 'image' ? 'selected' : '' %>" data-type="image">Görseller</a>
+        <a href="/search?query=<%= encodeURIComponent(query) %>&type=video&lang=<%= lang %>" class="search-option-item <%= type === 'video' ? 'selected' : '' %>" data-type="video">Videolar</a>
+        <a href="/search?query=<%= encodeURIComponent(query) %>&type=news&lang=<%= lang %>" class="search-option-item <%= type === 'news' ? 'selected' : '' %>" data-type="news">Haberler</a>
+        <a href="/search?query=<%= encodeURIComponent(query) %>&type=wiki&lang=<%= lang %>" class="search-option-item <%= type === 'wiki' ? 'selected' : '' %>" data-type="wiki">Wikipedia</a>
+        <div class="underline-indicator" id="underlineIndicator"></div>
     </div>
 
     <% if (errorMessage) { %>
@@ -284,13 +431,12 @@
             <% results.forEach(result => { %>
                 <div class="bg-[#2C2C2E] p-4 rounded-lg shadow-lg search-result-item">
                     <a href="<%= result.link %>" target="_blank" rel="noopener noreferrer" class="text-[#8E8E93] text-sm block mb-1 result-link flex items-center">
-                        <% 
+                        <%
                             let domain = '';
                             try {
                                 const urlObj = new URL(result.link);
                                 domain = urlObj.hostname;
                             } catch (e) {
-                                console.warn("Invalid URL for favicon:", result.link, e);
                                 domain = result.displayUrl;
                             }
                             const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=16`;
@@ -426,7 +572,6 @@
     </button>
     <div class="overlay-content">
         <h2 class="text-2xl font-bold mb-6 text-white">Control Center</h2>
-        
         <a href="/privacy" class="menu-item">
             <i class="fa-solid fa-lock"></i>
             <span>Privacy & Terms</span>
@@ -475,7 +620,7 @@
         <h2 class="text-3xl font-bold mb-6 text-white">Quick Search</h2>
         <form aria-label="Quick search form" class="w-full mb-6" action="/search" method="GET">
             <div class="relative mb-4">
-                <input class="w-full rounded-full bg-[#18181B] text-[#8E8E93] placeholder-[#8E8E93] py-3 pl-6 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#5A5A5F] focus:bg-[#3A3A3C]" 
+                <input class="w-full rounded-full bg-[#18181B] text-[#8E8E93] placeholder-[#8E8E93] py-3 pl-6 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-[#5A5A5F] focus:bg-[#3A3A3C]"
                        id="quickSearchInput" name="query" placeholder="Search..." type="search"/>
                 <button aria-label="Quick Search Submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-[#8E8E93] hover:text-white" type="submit">
                     <i class="fas fa-search"></i>
@@ -532,11 +677,36 @@
 
         const mainSearchForm = document.getElementById('mainSearchForm');
         const mainSearchLang = document.getElementById('mainSearchLang');
-        const mainSearchInput = document.getElementById('search-results'); 
+        const mainSearchInput = document.getElementById('search-results');
         const clearSearchButton = document.getElementById('clearSearchButton');
 
         const searchHistoryContainer = document.getElementById('searchHistoryContainer');
         const recentSearchesList = document.getElementById('recentSearchesList');
+
+        const searchResultsSuggestionsDiv = document.getElementById('searchResultsSuggestions');
+        const searchSuggestionsData = [
+            "test sonucu",
+            "test nedir",
+            "test çöz",
+            "test sürüşü",
+            "test mühendisliği",
+            "test kitabı",
+            "test teknikleri",
+            "test uygulamaları",
+            "test etmek",
+            "test etmek ne demek",
+            "yapay zeka",
+            "uzay araştırmaları",
+            "programlama dilleri",
+            "tarihi olaylar",
+            "son dakika haberleri",
+            "wikipedia ne demek",
+            "wikipedia nasıl kullanılır"
+        ];
+
+        const searchOptionsBar = document.getElementById('searchOptionsBar');
+        const underlineIndicator = document.getElementById('underlineIndicator');
+        const searchOptionItems = document.querySelectorAll('.search-option-item');
 
         function toggleOverlay(overlayElement, show) {
             const content = overlayElement.querySelector('.overlay-content, .modal-content');
@@ -570,6 +740,22 @@
             }
         }
 
+        const updateUnderlineIndicator = () => {
+            const selectedItem = document.querySelector('.search-option-item.selected');
+            if (selectedItem) {
+                underlineIndicator.style.width = `${selectedItem.offsetWidth}px`;
+                underlineIndicator.style.transform = `translateX(${selectedItem.offsetLeft}px)`;
+            }
+        };
+
+        searchOptionItems.forEach(item => {
+            item.addEventListener('click', () => {
+                searchOptionItems.forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+                updateUnderlineIndicator();
+            });
+        });
+
         const loadLanguageSetting = () => {
             const savedLang = localStorage.getItem('synapicSearchLang') || 'en';
             languageSelect.value = savedLang;
@@ -585,7 +771,7 @@
         saveSearchOptionsButton.addEventListener('click', () => {
             const selectedLang = languageSelect.value;
             localStorage.setItem('synapicSearchLang', selectedLang);
-            
+
             const isLocationBased = locationBasedToggle.checked;
             localStorage.setItem('synapicLocationBased', isLocationBased);
 
@@ -627,7 +813,7 @@
             const currentMainQuery = mainSearchInput.value || '';
             quickSearchInput.value = currentMainQuery;
             quickSearchInput.focus();
-            updateQuickSearchInputPlaceholder('web'); 
+            updateQuickSearchInputPlaceholder('web');
         });
         closeGridViewButton.addEventListener('click', () => {
             toggleOverlay(gridViewOverlay, false);
@@ -663,7 +849,7 @@
         function getDeviceId() {
             let deviceId = localStorage.getItem('synapicDeviceId');
             if (!deviceId) {
-                const randomDigits = Math.floor(100000 + Math.random() * 900000); 
+                const randomDigits = Math.floor(100000 + Math.random() * 900000);
                 deviceId = `apm_${randomDigits}`;
                 localStorage.setItem('synapicDeviceId', deviceId);
             }
@@ -672,7 +858,7 @@
 
         const saveSearchToHistory = async () => {
             const query = mainSearchInput.value;
-            const type = "web";
+            const type = document.querySelector('.search-option-item.selected')?.dataset.type || "web";
             const lang = mainSearchLang.value;
             const deviceId = getDeviceId();
 
@@ -687,7 +873,7 @@
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({ title, url, deviceId }),
-                        keepalive: true 
+                        keepalive: true
                     });
                     if (!response.ok) {
                         const errorText = await response.text();
@@ -716,6 +902,7 @@
             mainSearchInput.value = '';
             toggleClearButton();
             searchHistoryContainer.classList.add('hidden');
+            searchResultsSuggestionsDiv.classList.remove('active');
             mainSearchInput.focus();
         });
 
@@ -745,23 +932,82 @@
                 return;
             }
 
-            searchHistoryContainer.classList.remove('hidden');
+            if (!searchResultsSuggestionsDiv.classList.contains('active')) {
+                searchHistoryContainer.classList.remove('hidden');
+            }
+
             history.slice(0, 5).forEach(item => {
+                const displayQueryMatch = item.title.match(/Search: (.*?) \((.*?)\ssearch\)/);
+                const displayQuery = displayQueryMatch ? displayQueryMatch[1] : item.title;
+
                 const historyItemHtml = `
-                    <a href="#" data-query="${item.title.replace(/Search: (.*?) \((.*?)\ssearch\)/, '$1')}" class="search-history-item text-[#E0E0E0] text-sm">
-                        <i class="fas fa-search"></i>
-                        <span>${item.title.replace(/Search: (.*?) \((.*?)\ssearch\)/, '$1')}</span>
+                    <a href="#" data-query="${displayQuery}" class="search-history-item text-[#E0E0E0] text-sm">
+                        <i class="fas fa-history"></i> <span>${displayQuery}</span>
                     </a>
                 `;
                 recentSearchesList.innerHTML += historyItemHtml;
             });
         };
 
-        mainSearchInput.addEventListener('focus', fetchRecentSearches);
+        mainSearchInput.addEventListener('input', () => {
+            const query = mainSearchInput.value.toLowerCase();
+            searchResultsSuggestionsDiv.innerHTML = '';
+
+            if (query.length > 0) {
+                searchHistoryContainer.classList.add('hidden');
+
+                const filteredSuggestions = searchSuggestionsData.filter(suggestion =>
+                    suggestion.toLowerCase().includes(query)
+                );
+
+                if (filteredSuggestions.length > 0) {
+                    filteredSuggestions.forEach(suggestion => {
+                        const suggestionDiv = document.createElement('div');
+                        suggestionDiv.classList.add('suggestion-item');
+                        suggestionDiv.innerHTML = `<i class="fas fa-search"></i><span>${suggestion}</span>`;
+                        suggestionDiv.addEventListener('click', (event) => {
+                            event.preventDefault();
+                            mainSearchInput.value = suggestion;
+                            searchResultsSuggestionsDiv.classList.remove('active');
+                            mainSearchForm.submit();
+                        });
+                        searchResultsSuggestionsDiv.appendChild(suggestionDiv);
+                    });
+                    searchResultsSuggestionsDiv.classList.add('active');
+                } else {
+                    searchResultsSuggestionsDiv.classList.remove('active');
+                }
+            } else {
+                searchResultsSuggestionsDiv.classList.remove('active');
+                fetchRecentSearches();
+            }
+        });
+
+        mainSearchInput.addEventListener('focus', () => {
+            if (mainSearchInput.value.length > 0) {
+                mainSearchInput.dispatchEvent(new Event('input'));
+            } else {
+                fetchRecentSearches();
+            }
+        });
+
         mainSearchInput.addEventListener('blur', () => {
             setTimeout(() => {
+                if (!searchResultsSuggestionsDiv.contains(document.activeElement)) {
+                    searchResultsSuggestionsDiv.classList.remove('active');
+                }
+                if (!searchHistoryContainer.contains(document.activeElement)) {
+                    searchHistoryContainer.classList.add('hidden');
+                }
+            }, 100);
+        });
+
+        document.addEventListener('click', (event) => {
+            const searchBarAndSuggestionsArea = mainSearchInput.closest('.search-bar-container');
+            if (searchBarAndSuggestionsArea && !searchBarAndSuggestionsArea.contains(event.target)) {
+                searchResultsSuggestionsDiv.classList.remove('active');
                 searchHistoryContainer.classList.add('hidden');
-            }, 200);
+            }
         });
 
         recentSearchesList.addEventListener('click', (event) => {
@@ -777,6 +1023,7 @@
         loadLanguageSetting();
         loadLocationBasedSetting();
         toggleClearButton();
+        updateUnderlineIndicator();
     });
   </script>
  </body>
