@@ -20,4 +20,4 @@ Caracal is more than just a speed test; it's a commitment to your digital privac
 
 ---
 
-**A Proud Product of Yiğit KABAK**
+**A Proud Product of openbyte*
