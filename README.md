@@ -18,4 +18,4 @@ To submit a package or discuss potential additions, please reach out to me direc
 
 ---
 
-*Developed by Yiğit KABAK.*
+*Developed by openbyte.*
