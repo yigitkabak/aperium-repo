@@ -18,7 +18,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden; /* Prevent horizontal scroll from content push */
+      overflow-x: hidden;
     }
     .result-link:hover {
         text-decoration: underline;
@@ -253,7 +253,6 @@
         padding-left: 0.5rem;
     }
 
-    /* New class for when a right-sliding panel is active */
     body.right-panel-active main,
     body.right-panel-active footer,
     body.right-panel-active header {
@@ -532,6 +531,46 @@
         display: block;
     }
 
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 3rem;
+        margin-bottom: 2rem;
+        gap: 1rem;
+    }
+
+    .pagination-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background-color: #2C2C2E;
+        color: #E0E0E0;
+        font-size: 1.25rem;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        text-decoration: none;
+    }
+
+    .pagination-link:hover {
+        background-color: #3A3A3C;
+        color: #007AFF;
+    }
+
+    .pagination-link.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    .pagination-info {
+        color: #8E8E93;
+        font-size: 1rem;
+        white-space: nowrap;
+    }
+
   </style>
  </head>
  <body class="bg-[#000000] text-white min-h-screen flex flex-col">
@@ -567,7 +606,7 @@
                 </button>
             </div>
             <input type="hidden" name="lang" id="mainSearchLang" value="<%= lang %>">
-        </form>
+            <input type="hidden" name="page" id="mainSearchPage" value="<%= currentPage %>"> </form>
 
         <div id="searchResultsAndHistoryContainer" class="absolute top-full left-0 w-full">
             <div id="searchHistoryContainer" class="p-4">
@@ -630,10 +669,10 @@ target="_blank" rel="noopener noreferrer" class="text-[#8E8E93] text-sm block mb
             %>
             <% } else if (type === 'image' && images.length > 0) { %>
                 <div class="w-full">
-                    <h2 class="text-xl font-bold text-white mb-4 text-center">Image Results</h2>
-                    <div class="bg-[#2C2C2E] p-4 rounded-lg shadow-lg"> <!-- Single card for all images -->
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 justify-items-center">
-                            <% images.slice(0, 25).forEach(image => { %>
+                    <h2 class="text-xl font-bold
+text-white mb-4 text-center">Image Results</h2>
+                    <div class="bg-[#2C2C2E] p-4 rounded-lg shadow-lg"> <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 justify-items-center">
+                            <% images.forEach(image => { %>
                                 <div class="bg-[#1a1a1a] p-2 rounded-lg shadow-md flex flex-col items-center cursor-pointer image-card aspect-square w-full"
                                      data-full-image-url="<%= image.image %>"
                                      data-image-link="<%= image.link %>"
@@ -722,17 +761,36 @@ text-white mb-4 text-center">News Results</h2>
                         <p>Please try a different search term.</p>
                     </div>
                 <% } %>
-            <% } else if (type === 'web' && results.length === 0) { %>
+            <% } else { %>
                 <div class="w-full text-center text-[#8E8E93] py-8">
-                    <p class="text-lg mb-2">No web results found for "<%= query %>".</p>
-                    <p>Please try a different search term.</p>
+                    <p class="text-lg mb-2">No results found for "<%= query %>" in this category.</p>
+                    <p>Please try a different search term or search category.</p>
                 </div>
             <% } %>
         </div>
     </div>
+
+    <%
+        const showPagination = ['web', 'image', 'video', 'news'].includes(type) && totalPages > 1;
+        if (showPagination) {
+            const prevPage = currentPage - 1;
+            const nextPage = currentPage + 1;
+            const prevLink = `/search?query=${encodeURIComponent(query)}&type=${type}&lang=${lang}&page=${prevPage}`;
+            const nextLink = `/search?query=${encodeURIComponent(query)}&type=${type}&lang=${lang}&page=${nextPage}`;
+    %>
+    <div class="pagination-container">
+        <a href="<%= prevLink %>" class="pagination-link <%= currentPage === 1 ? 'disabled' : '' %>" aria-label="Previous Page">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <span class="pagination-info">Page <%= currentPage %> of <%= totalPages %></span>
+        <a href="<%= nextLink %>" class="pagination-link <%= currentPage === totalPages ? 'disabled' : '' %>" aria-label="Next Page">
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+    <% } %>
+
   </main>
 
-  <!-- Image Modal Overlay -->
   <div id="imageModalOverlay" class="overlay">
     <button class="overlay-close" id="closeImageModalButton" aria-label="Close">
         <i class="fas fa-times"></i>
@@ -836,6 +894,7 @@ space-x-3 p-3 rounded-lg hover:bg-[#2a2a2a] transition-colors duration-200 quick
         const clearButton = document.getElementById('clearSearchButton');
         const mainSearchForm = document.getElementById('mainSearchForm');
         const mainSearchLang = document.getElementById('mainSearchLang');
+        const mainSearchPage = document.getElementById('mainSearchPage');
 
         const searchResultsAndHistoryContainer = document.getElementById('searchResultsAndHistoryContainer');
         const searchHistoryContainer = document.getElementById('searchHistoryContainer');
@@ -869,6 +928,7 @@ space-x-3 p-3 rounded-lg hover:bg-[#2a2a2a] transition-colors duration-200 quick
                     historyItem.innerHTML = `<i class="fas fa-history mr-2 text-[#8E8E93]"></i> <span>${item}</span>`;
                     historyItem.addEventListener('click', () => {
                         searchInput.value = item;
+                        mainSearchPage.value = '1'; 
                         mainSearchForm.submit();
                     });
                     recentSearchesList.appendChild(historyItem);
@@ -896,6 +956,9 @@ space-x-3 p-3 rounded-lg hover:bg-[#2a2a2a] transition-colors duration-200 quick
 
         mainSearchForm.addEventListener('submit', (event) => {
             saveSearchQuery(searchInput.value);
+            if (event.submitter && event.submitter.type === 'submit' && event.submitter.id === 'search-results') {
+                 mainSearchPage.value = '1';
+            }
         });
 
         searchInput.addEventListener('focus', () => {
@@ -1023,69 +1086,4 @@ space-x-3 p-3 rounded-lg hover:bg-[#2a2a2a] transition-colors duration-200 quick
         function loadLanguageSetting() {
             const savedLang = localStorage.getItem('synapicSearchLang');
             if (savedLang) {
-                languageSelect.value = savedLang;
-                mainSearchLang.value = savedLang;
-            } else {
-                languageSelect.value = 'en';
-                mainSearchLang.value = 'en';
-            }
-        }
-
-        document.getElementById('saveSearchOptions').addEventListener('click', () => {
-            const selectedLang = languageSelect.value;
-            localStorage.setItem('synapicSearchLang', selectedLang);
-
-            const isLocationBased = locationBasedToggle.checked;
-            localStorage.setItem('synapicLocationBased', isLocationBased);
-
-            loadLanguageSetting();
-            loadLocationBasedSetting();
-            const alertBox = document.createElement('div');
-            alertBox.textContent = 'Settings saved!';
-            alertBox.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background-color: #007aff;
-                color: white;
-                padding: 10px 20px;
-                border-radius: 5px;
-                z-index: 9999;
-                opacity: 0;
-                transition: opacity 0.5s ease-in-out;
-            `;
-            document.body.appendChild(alertBox);
-            setTimeout(() => {
-                alertBox.style.opacity = 1;
-            }, 10);
-            setTimeout(() => {
-                alertBox.style.opacity = 0;
-                alertBox.addEventListener('transitionend', () => alertBox.remove());
-            }, 3000);
-
-            closeOverlay(searchOptionsOverlay);
-        });
-
-        loadLanguageSetting();
-        loadLocationBasedSetting();
-        toggleClearButton();
-
-        const searchOptionItems = document.querySelectorAll('.search-option-item');
-        const searchOptionsBar = document.getElementById('searchOptionsBar');
-
-        searchOptionItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                searchOptionItems.forEach(opt => opt.classList.remove('selected'));
-                item.classList.add('selected');
-                const href = item.getAttribute('href');
-                if (href) {
-                    window.location.href = href;
-                }
-            });
-        });
-    });
-  </script>
- </body>
-</html>
+                languageSelect
