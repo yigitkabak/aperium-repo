@@ -2,7 +2,6 @@ import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.43/deno-dom-wasm.ts
 import { exists } from "https://deno.land/std@0.224.0/fs/exists.ts";
 import { dirname, fromFileUrl, resolve } from "https://deno.land/std@0.224.0/path/mod.ts";
 
-
 export interface WikipediaSummaryApiResponse {
     title: string;
     extract: string;
@@ -67,8 +66,6 @@ export interface GNewsApiResponse {
     articles: NewsArticle[];
 }
 
-
-
 interface CacheItem<T> {
     data: T | null;
     expiry: number;
@@ -128,9 +125,6 @@ const langToCountryCode: { [key: string]: string } = {
 };
 
 const __dirname = dirname(fromFileUrl(import.meta.url));
-
-
-
 
 export async function fetchWikiSummary(query: string, lang: string = "tr"): Promise<WikiSummary | null> {
     const cacheKey = `wiki_summary_${lang}_${query}`;
@@ -712,16 +706,14 @@ export async function getAggregatedWebResults(query: string, start: number = 0, 
         }
     }
 
-
     let filteredAndSortedList = fullCombinedList
         .filter(result => {
             return !containsExcludedScripts(result.title) && !containsExcludedScripts(result.snippet);
         });
     
-    const slicedResults = filteredAndSortedList.slice(start, start + 10);
     Cache.clear(); 
 
-    return slicedResults;
+    return filteredAndSortedList;
 }
 
 export function checkBangRedirects(query: string): string | null {
