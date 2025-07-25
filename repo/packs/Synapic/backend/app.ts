@@ -10,7 +10,11 @@ import { dirname, fromFileUrl, resolve } from "https://deno.land/std@0.224.0/pat
 interface RenderData {
     query: string;
     type: string;
-    start: number;
+    currentPage: number;
+    resultsPerPage: number;
+    totalResults: number;
+    totalPages: number;
+    
     results: SearchResult[];
     images: ImageResult[];
     videos: VideoResult[];
@@ -30,6 +34,11 @@ interface ApiResponse {
     type: string;
     searchSource: string;
     wiki: WikiSummary | null;
+    currentPage: number;
+    resultsPerPage: number;
+    totalResults: number;
+    totalPages: number;
+
     results?: SearchResult[];
     images?: ImageResult[];
     videos?: VideoResult[];
@@ -72,6 +81,8 @@ const STATUS_LOG_FILE_PATH = resolve(__dirname, "src", "json", "status.json");
 
 const VIEWS_ROOT = resolve(PROJECT_ROOT, "frontend", "views");
 const PUBLIC_ROOT = resolve(PROJECT_ROOT, "frontend", "public");
+
+const RESULTS_PER_PAGE = 20;
 
 async function getHistory(): Promise<HistoryItem[]> {
     try {
@@ -233,7 +244,7 @@ router.get("/search", async (ctx) => {
     const startTime = Date.now();
     const query = (ctx.request.url.searchParams.get("query") || ctx.request.url.searchParams.get("q") || "").trim();
     let type = (ctx.request.url.searchParams.get("type") || "web").toLowerCase();
-    const start = Math.max(0, parseInt(ctx.request.url.searchParams.get("start") || "0"));
+    const page = Math.max(1, parseInt(ctx.request.url.searchParams.get("page") || "1")); 
     const lang = (ctx.request.url.searchParams.get("lang") || "tr").toLowerCase();
     const deviceId = (ctx.request.url.searchParams.get("deviceId") || "").trim();
 
@@ -254,7 +265,11 @@ router.get("/search", async (ctx) => {
     const renderData: RenderData = {
         query,
         type,
-        start,
+        currentPage: page,
+        resultsPerPage: RESULTS_PER_PAGE,
+        totalResults: 0,
+        totalPages: 0,
+        
         results: [],
         images: [],
         videos: [],
@@ -282,7 +297,7 @@ router.get("/search", async (ctx) => {
 
         switch (type) {
             case "web":
-                mainFetchPromise = getAggregatedWebResults(query, start, lang);
+                mainFetchPromise = getAggregatedWebResults(query, 0, lang); 
                 searchSourceText = "Web Results (Aggregated)";
                 break;
             case "image":
@@ -302,7 +317,7 @@ router.get("/search", async (ctx) => {
                 searchSourceText = "News Results (gnews.io)";
                 break;
             default:
-                mainFetchPromise = getAggregatedWebResults(query, start, lang);
+                mainFetchPromise = getAggregatedWebResults(query, 0, lang);
                 renderData.type = "web";
                 type = "web";
                 searchSourceText = "Web Results (Aggregated - Default)";
@@ -310,7 +325,7 @@ router.get("/search", async (ctx) => {
 
         renderData.searchSource = searchSourceText;
 
-        const [wikiResultFromPromise, mainResults] = await Promise.all([
+        const [wikiResultFromPromise, mainResultsFull] = await Promise.all([
             fetchPromises[0],
             mainFetchPromise.catch((e: Error) => {
                 console.error(`${type} fetch error:`, e.message);
@@ -318,23 +333,35 @@ router.get("/search", async (ctx) => {
             })
         ]);
 
-        renderData.wiki = (type === "wiki" ? mainResults : wikiResultFromPromise) as WikiSummary | null;
+        renderData.wiki = (type === "wiki" ? mainResultsFull : wikiResultFromPromise) as WikiSummary | null;
+
+        let paginatedResults: any[] = [];
+        let totalItems: number = 0;
 
         switch (type) {
             case "web":
-                renderData.results = mainResults as SearchResult[] || [];
+                const webResultsFull = mainResultsFull as SearchResult[] || [];
+                totalItems = webResultsFull.length;
+                paginatedResults = webResultsFull.slice((page - 1) * RESULTS_PER_PAGE, page * RESULTS_PER_PAGE);
+                renderData.results = paginatedResults as SearchResult[];
                 renderData.images = [];
                 renderData.videos = [];
                 renderData.newsResults = [];
                 break;
             case "image":
-                renderData.images = mainResults as ImageResult[] || [];
+                const imagesFull = mainResultsFull as ImageResult[] || [];
+                totalItems = imagesFull.length;
+                paginatedResults = imagesFull.slice((page - 1) * RESULTS_PER_PAGE, page * RESULTS_PER_PAGE);
+                renderData.images = paginatedResults as ImageResult[];
                 renderData.results = [];
                 renderData.videos = [];
                 renderData.newsResults = [];
                 break;
             case "video":
-                renderData.videos = mainResults as VideoResult[] || [];
+                const videosFull = mainResultsFull as VideoResult[] || [];
+                totalItems = videosFull.length;
+                paginatedResults = videosFull.slice((page - 1) * RESULTS_PER_PAGE, page * RESULTS_PER_PAGE);
+                renderData.videos = paginatedResults as VideoResult[];
                 renderData.results = [];
                 renderData.images = [];
                 renderData.newsResults = [];
@@ -346,15 +373,33 @@ router.get("/search", async (ctx) => {
                 renderData.newsResults = [];
                 break;
             case "news":
-                renderData.newsResults = mainResults as SearchResult[] || [];
+                const newsFull = mainResultsFull as SearchResult[] || [];
+                totalItems = newsFull.length;
+                paginatedResults = newsFull.slice((page - 1) * RESULTS_PER_PAGE, page * RESULTS_PER_PAGE);
+                renderData.newsResults = paginatedResults as SearchResult[];
                 renderData.results = [];
                 renderData.images = [];
                 renderData.videos = [];
                 break;
             default:
-                renderData.results = mainResults as SearchResult[] || [];
+                const defaultResultsFull = mainResultsFull as SearchResult[] || [];
+                totalItems = defaultResultsFull.length;
+                paginatedResults = defaultResultsFull.slice((page - 1) * RESULTS_PER_PAGE, page * RESULTS_PER_PAGE);
+                renderData.results = paginatedResults as SearchResult[];
                 break;
         }
+
+        renderData.totalResults = totalItems;
+        renderData.totalPages = Math.ceil(totalItems / RESULTS_PER_PAGE);
+        if (page > renderData.totalPages && renderData.totalPages > 0) {
+            ctx.response.redirect(`/search?q=${encodeURIComponent(query)}&type=${type}&lang=${encodeURIComponent(lang)}&page=1`);
+            return;
+        }
+        if (totalItems === 0 && page > 1) {
+             ctx.response.redirect(`/search?q=${encodeURIComponent(query)}&type=${type}&lang=${encodeURIComponent(lang)}&page=1`);
+            return;
+        }
+
 
     } catch (error: any) {
         console.error("Search processing error:", error.message);
@@ -364,6 +409,8 @@ router.get("/search", async (ctx) => {
         renderData.images = [];
         renderData.videos = [];
         renderData.newsResults = [];
+        renderData.totalResults = 0;
+        renderData.totalPages = 0;
     } finally {
         renderData.elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
         if (renderData.errorMessage === undefined) {
@@ -376,7 +423,7 @@ router.get("/search", async (ctx) => {
 router.get("/api/search", checkApiKey, async (ctx) => {
     const query = (ctx.request.url.searchParams.get("query") || ctx.request.url.searchParams.get("q"))?.trim();
     let type = (ctx.request.url.searchParams.get("type") || "web").toLowerCase();
-    const start = Math.max(0, parseInt(ctx.request.url.searchParams.get("start") || "0"));
+    const page = Math.max(1, parseInt(ctx.request.url.searchParams.get("page") || "1"));
     const lang = (ctx.request.url.searchParams.get("lang") || "tr").toLowerCase();
     const deviceId = (ctx.request.url.searchParams.get("deviceId") || "").trim();
 
@@ -399,7 +446,7 @@ router.get("/api/search", checkApiKey, async (ctx) => {
 
         switch (type) {
             case "web":
-                mainFetchPromise = getAggregatedWebResults(query, start, lang);
+                mainFetchPromise = getAggregatedWebResults(query, 0, lang);
                 searchSourceApi = "Aggregated Web (API)";
                 break;
             case "image":
@@ -419,12 +466,12 @@ router.get("/api/search", checkApiKey, async (ctx) => {
                 searchSourceApi = "News (API - gnews.io)";
                 break;
             default:
-                mainFetchPromise = getAggregatedWebResults(query, start, lang);
+                mainFetchPromise = getAggregatedWebResults(query, 0, lang);
                 type = "web";
                 searchSourceApi = "Aggregated Web (API - Default)";
         }
 
-        const [wikiResultForOtherTypes, mainResult] = await Promise.all([
+        const [wikiResultForOtherTypes, mainResultFull] = await Promise.all([
             wikiPromise,
             mainFetchPromise.catch((e: Error) => {
                 console.error(`API ${type} fetch error:`, e.message);
@@ -432,30 +479,67 @@ router.get("/api/search", checkApiKey, async (ctx) => {
             })
         ]);
 
-        const apiResponse: ApiResponse = {
-            query,
-            type,
-            searchSource: searchSourceApi,
-            wiki: (type === "wiki" ? mainResult : wikiResultForOtherTypes) as WikiSummary | null,
-        };
+        let paginatedResults: any[] = [];
+        let totalItems: number = 0;
 
         switch (type) {
             case "web":
-                apiResponse.results = mainResult as SearchResult[] || [];
+                const webResultsFull = mainResultFull as SearchResult[] || [];
+                totalItems = webResultsFull.length;
+                paginatedResults = webResultsFull.slice((page - 1) * RESULTS_PER_PAGE, page * RESULTS_PER_PAGE);
                 break;
             case "image":
-                apiResponse.images = mainResult as ImageResult[] || [];
+                const imagesFull = mainResultFull as ImageResult[] || [];
+                totalItems = imagesFull.length;
+                paginatedResults = imagesFull.slice((page - 1) * RESULTS_PER_PAGE, page * RESULTS_PER_PAGE);
                 break;
             case "video":
-                apiResponse.videos = mainResult as VideoResult[] || [];
+                const videosFull = mainResultFull as VideoResult[] || [];
+                totalItems = videosFull.length;
+                paginatedResults = videosFull.slice((page - 1) * RESULTS_PER_PAGE, page * RESULTS_PER_PAGE);
                 break;
             case "wiki":
                 break;
             case "news":
-                apiResponse.newsResults = mainResult as SearchResult[] || [];
+                const newsFull = mainResultFull as SearchResult[] || [];
+                totalItems = newsFull.length;
+                paginatedResults = newsFull.slice((page - 1) * RESULTS_PER_PAGE, page * RESULTS_PER_PAGE);
                 break;
             default:
-                apiResponse.results = mainResult as SearchResult[] || [];
+                const defaultResultsFull = mainResultFull as SearchResult[] || [];
+                totalItems = defaultResultsFull.length;
+                paginatedResults = defaultResultsFull.slice((page - 1) * RESULTS_PER_PAGE, page * RESULTS_PER_PAGE);
+                break;
+        }
+
+        const apiResponse: ApiResponse = {
+            query,
+            type,
+            searchSource: searchSourceApi,
+            wiki: (type === "wiki" ? mainResultFull : wikiResultForOtherTypes) as WikiSummary | null,
+            currentPage: page,
+            resultsPerPage: RESULTS_PER_PAGE,
+            totalResults: totalItems,
+            totalPages: Math.ceil(totalItems / RESULTS_PER_PAGE)
+        };
+
+        switch (type) {
+            case "web":
+                apiResponse.results = paginatedResults as SearchResult[] || [];
+                break;
+            case "image":
+                apiResponse.images = paginatedResults as ImageResult[] || [];
+                break;
+            case "video":
+                apiResponse.videos = paginatedResults as VideoResult[] || [];
+                break;
+            case "wiki":
+                break;
+            case "news":
+                apiResponse.newsResults = paginatedResults as SearchResult[] || [];
+                break;
+            default:
+                apiResponse.results = paginatedResults as SearchResult[] || [];
                 break;
         }
 
@@ -466,6 +550,7 @@ router.get("/api/search", checkApiKey, async (ctx) => {
         ctx.response.body = { error: "A server error occurred during search." };
     }
 });
+
 
 router.post("/api/save-history", async (ctx) => {
     console.log(`[Router] /api/save-history POST request received.`);
@@ -655,7 +740,8 @@ router.get("/privacy", async (ctx) => {
 router.get("/image", (ctx) => {
     const query = ctx.request.url.searchParams.get("q") || "";
     const lang = ctx.request.url.searchParams.get("lang") || "tr";
-    ctx.response.redirect(`/search?query=${encodeURIComponent(query)}&type=image&lang=${encodeURIComponent(lang)}`);
+    const page = ctx.request.url.searchParams.get("page") || "1";
+    ctx.response.redirect(`/search?query=${encodeURIComponent(query)}&type=image&lang=${encodeURIComponent(lang)}&page=${encodeURIComponent(page)}`);
 });
 router.get("/wiki", (ctx) => {
     const query = ctx.request.url.searchParams.get("q") || "";
@@ -665,12 +751,14 @@ router.get("/wiki", (ctx) => {
 router.get("/video", (ctx) => {
     const query = ctx.request.url.searchParams.get("q") || "";
     const lang = ctx.request.url.searchParams.get("lang") || "tr";
-    ctx.response.redirect(`/search?query=${encodeURIComponent(query)}&type=video&lang=${encodeURIComponent(lang)}`);
+    const page = ctx.request.url.searchParams.get("page") || "1";
+    ctx.response.redirect(`/search?query=${encodeURIComponent(query)}&type=video&lang=${encodeURIComponent(lang)}&page=${encodeURIComponent(page)}`);
 });
 router.get("/news", (ctx) => {
     const query = ctx.request.url.searchParams.get("q") || "";
     const lang = ctx.request.url.searchParams.get("lang") || "tr";
-    ctx.response.redirect(`/search?query=${encodeURIComponent(query)}&type=news&lang=${encodeURIComponent(lang)}`);
+    const page = ctx.request.url.searchParams.get("page") || "1";
+    ctx.response.redirect(`/search?query=${encodeURIComponent(query)}&type=news&lang=${encodeURIComponent(lang)}&page=${encodeURIComponent(page)}`);
 });
 
 app.use(router.routes());
