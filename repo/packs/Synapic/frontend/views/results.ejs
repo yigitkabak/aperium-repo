@@ -18,7 +18,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
+      overflow-x: hidden; /* Prevent horizontal scroll from content push */
     }
     .result-link:hover {
         text-decoration: underline;
@@ -253,6 +253,7 @@
         padding-left: 0.5rem;
     }
 
+    /* New class for when a right-sliding panel is active */
     body.right-panel-active main,
     body.right-panel-active footer,
     body.right-panel-active header {
@@ -531,6 +532,7 @@
         display: block;
     }
 
+    /* Styles for Pagination */
     .pagination-container {
         display: flex;
         justify-content: center;
@@ -546,29 +548,29 @@
         justify-content: center;
         width: 44px;
         height: 44px;
-        border-radius: 50%;
+        border-radius: 50%; /* Make them round */
         background-color: #2C2C2E;
         color: #E0E0E0;
-        font-size: 1.25rem;
+        font-size: 1.25rem; /* Larger icons */
         transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-        text-decoration: none;
+        text-decoration: none; /* Remove underline for links */
     }
 
     .pagination-link:hover {
         background-color: #3A3A3C;
-        color: #007AFF;
+        color: #007AFF; /* Hover color for icons */
     }
 
     .pagination-link.disabled {
         opacity: 0.5;
         cursor: not-allowed;
-        pointer-events: none;
+        pointer-events: none; /* Disable click events */
     }
 
     .pagination-info {
         color: #8E8E93;
         font-size: 1rem;
-        white-space: nowrap;
+        white-space: nowrap; /* Prevent wrapping */
     }
 
   </style>
@@ -771,6 +773,8 @@ text-white mb-4 text-center">News Results</h2>
     </div>
 
     <%
+        // Sadece web, resim, video ve haber sonuçları için sayfalama gösterelim
+        // totalPages ve currentPage değerlerinin sunucu tarafından doğru bir şekilde gönderildiğinden emin olun.
         const showPagination = ['web', 'image', 'video', 'news'].includes(type) && totalPages > 1;
         if (showPagination) {
             const prevPage = currentPage - 1;
@@ -894,7 +898,7 @@ space-x-3 p-3 rounded-lg hover:bg-[#2a2a2a] transition-colors duration-200 quick
         const clearButton = document.getElementById('clearSearchButton');
         const mainSearchForm = document.getElementById('mainSearchForm');
         const mainSearchLang = document.getElementById('mainSearchLang');
-        const mainSearchPage = document.getElementById('mainSearchPage');
+        const mainSearchPage = document.getElementById('mainSearchPage'); // Yeni eklenen sayfa hidden input'u
 
         const searchResultsAndHistoryContainer = document.getElementById('searchResultsAndHistoryContainer');
         const searchHistoryContainer = document.getElementById('searchHistoryContainer');
@@ -928,6 +932,7 @@ space-x-3 p-3 rounded-lg hover:bg-[#2a2a2a] transition-colors duration-200 quick
                     historyItem.innerHTML = `<i class="fas fa-history mr-2 text-[#8E8E93]"></i> <span>${item}</span>`;
                     historyItem.addEventListener('click', () => {
                         searchInput.value = item;
+                        // Geçmişten arama yaparken her zaman 1. sayfaya dön
                         mainSearchPage.value = '1'; 
                         mainSearchForm.submit();
                     });
@@ -956,7 +961,9 @@ space-x-3 p-3 rounded-lg hover:bg-[#2a2a2a] transition-colors duration-200 quick
 
         mainSearchForm.addEventListener('submit', (event) => {
             saveSearchQuery(searchInput.value);
-            if (event.submitter && event.submitter.type === 'submit' && event.submitter.id === 'search-results') {
+            // Form gönderildiğinde sayfa numarasını koru (yeni arama değilse)
+            // Ya da yeni bir arama ise her zaman 1. sayfaya ayarla (bu daha mantıklı)
+            if (event.submitter && event.submitter.type === 'submit' && event.submitter.id === 'search-results') { // Ana arama butonu
                  mainSearchPage.value = '1';
             }
         });
@@ -1086,4 +1093,76 @@ space-x-3 p-3 rounded-lg hover:bg-[#2a2a2a] transition-colors duration-200 quick
         function loadLanguageSetting() {
             const savedLang = localStorage.getItem('synapicSearchLang');
             if (savedLang) {
-                languageSelect
+                languageSelect.value = savedLang;
+                mainSearchLang.value = savedLang;
+                document.getElementById('quickSearchLang').value = savedLang; // Quick Search dilini de güncelle
+            } else {
+                languageSelect.value = 'en'; // Varsayılan olarak İngilizce
+                mainSearchLang.value = 'en';
+                document.getElementById('quickSearchLang').value = 'en';
+            }
+        }
+
+        document.getElementById('saveSearchOptions').addEventListener('click', () => {
+            const selectedLang = languageSelect.value;
+            localStorage.setItem('synapicSearchLang', selectedLang);
+
+            const isLocationBased = locationBasedToggle.checked;
+            localStorage.setItem('synapicLocationBased', isLocationBased);
+
+            loadLanguageSetting(); // Ayarları kaydettikten sonra tekrar yükleyelim
+            loadLocationBasedSetting();
+            
+            const alertBox = document.createElement('div');
+            alertBox.textContent = 'Settings saved!';
+            alertBox.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #007aff;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                z-index: 9999;
+                opacity: 0;
+                transition: opacity 0.5s ease-in-out;
+            `;
+            document.body.appendChild(alertBox);
+            setTimeout(() => {
+                alertBox.style.opacity = 1;
+            }, 10);
+            setTimeout(() => {
+                alertBox.style.opacity = 0;
+                alertBox.addEventListener('transitionend', () => alertBox.remove());
+            }, 3000);
+
+            closeOverlay(searchOptionsOverlay);
+        });
+
+        loadLanguageSetting();
+        loadLocationBasedSetting();
+        toggleClearButton();
+
+        const searchOptionItems = document.querySelectorAll('.search-option-item');
+        // searchOptionsBar elementini kullanmaya gerek yok, doğrudan linkleri dinliyoruz
+
+        searchOptionItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                searchOptionItems.forEach(opt => opt.classList.remove('selected'));
+                item.classList.add('selected');
+                
+                const currentUrl = new URL(window.location.href);
+                const query = currentUrl.searchParams.get('query') || '';
+                const lang = currentUrl.searchParams.get('lang') || 'en'; // Mevcut dil parametresini al
+                const newType = item.getAttribute('data-type');
+                
+                // Yeni bir kategoriye geçerken her zaman 1. sayfaya dön
+                window.location.href = `/search?query=${encodeURIComponent(query)}&type=${newType}&lang=${encodeURIComponent(lang)}&page=1`;
+            });
+        });
+    });
+  </script>
+ </body>
+</html>
