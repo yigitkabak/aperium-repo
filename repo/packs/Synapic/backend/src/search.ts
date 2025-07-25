@@ -108,6 +108,9 @@ export const Cache = {
     },
     getStorage: function(): Map<string, CacheItem<any>> {
         return cacheStorage;
+    },
+    clear: function(): void {
+        cacheStorage.clear();
     }
 };
 
@@ -716,6 +719,7 @@ export async function getAggregatedWebResults(query: string, start: number = 0, 
         });
     
     const slicedResults = filteredAndSortedList.slice(start, start + 10);
+    Cache.clear(); 
 
     return slicedResults;
 }
