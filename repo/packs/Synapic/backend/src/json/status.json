@@ -1,0 +1,1252 @@
+[
+  {
+    "timestamp": "2025-07-27T12:08:22.066Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:08:32.067Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:08:42.068Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:08:52.069Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:09:02.069Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:09:12.071Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:09:22.072Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:09:32.073Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:09:42.075Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:09:52.077Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:10:02.077Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:10:12.077Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:10:22.080Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:10:32.081Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:10:42.081Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:10:52.082Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:11:02.084Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:11:12.084Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:11:22.086Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:11:32.086Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:11:42.087Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:11:52.088Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:12:02.089Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:12:12.090Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:12:22.091Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:12:32.093Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:12:42.093Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:12:52.094Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:13:02.094Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:13:12.097Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:13:22.097Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:13:32.098Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:13:42.099Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:13:52.100Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:14:02.101Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:14:12.102Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:14:22.103Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:14:32.105Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:14:42.106Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:14:52.107Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:15:02.108Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:15:12.109Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:15:22.110Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:15:32.112Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:15:42.113Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:15:52.117Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:16:02.115Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:16:12.116Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:16:22.117Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  },
+  {
+    "timestamp": "2025-07-27T12:16:32.119Z",
+    "overallStatus": "All services active",
+    "services": [
+      {
+        "name": "synapic",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0.05,
+        "avgResponseTime": 0.06,
+        "maxResponseTime": 0.1
+      },
+      {
+        "name": "api",
+        "status": "Operational",
+        "statusClass": "",
+        "availability": 100,
+        "minResponseTime": 0,
+        "avgResponseTime": 0,
+        "maxResponseTime": 0
+      }
+    ],
+    "statusClass": "green"
+  }
+]

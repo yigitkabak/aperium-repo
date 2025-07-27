@@ -1,0 +1,38 @@
+[
+  {
+    "title": "gogle.com",
+    "url": "/search?query=gogle.com&type=web&lang=tr",
+    "timestamp": 1753618015084,
+    "deviceId": "apm_525498"
+  },
+  {
+    "title": "!gh yigitkabak",
+    "url": "/search?query=!gh%20yigitkabak&type=web&lang=tr",
+    "timestamp": 1753617712238,
+    "deviceId": "apm_525498"
+  },
+  {
+    "title": "!yt yusuf ipek",
+    "url": "/search?query=!yt%20yusuf%20ipek&type=web&lang=tr",
+    "timestamp": 1753617700222,
+    "deviceId": "apm_525498"
+  },
+  {
+    "title": "test",
+    "url": "/search?query=test&type=web&lang=tr",
+    "timestamp": 1753617194715,
+    "deviceId": "apm_359522"
+  },
+  {
+    "title": "test",
+    "url": "/search?query=test&type=web&lang=en",
+    "timestamp": 1753450429514,
+    "deviceId": "apm_359522"
+  },
+  {
+    "title": "test",
+    "url": "/search?query=test&type=web&lang=tr",
+    "timestamp": 1753449937495,
+    "deviceId": "apm_525498"
+  }
+]
