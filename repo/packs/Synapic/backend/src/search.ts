@@ -182,7 +182,7 @@ export async function fetchBingImages(query: string, lang: string = "tr"): Promi
                             link: m.purl || url
                         });
                     }
-                } catch (e: any) { /* Ignore parsing errors */ }
+                } catch (e: any) {}
             }
         });
         Cache.set(cacheKey, images);
@@ -228,7 +228,7 @@ export async function fetchYoutubeResults(query: string, lang: string = "tr"): P
                         if (videos.length >= 10) break;
                     }
                 }
-            } catch (e: any) { /* Ignore JSON parsing errors */ }
+            } catch (e: any) {}
         }
         Cache.set(cacheKey, videos);
         return videos;
@@ -266,7 +266,7 @@ export async function fetchGoogleResults(query: string, start: number = 0, lang:
                     try {
                         const parsedUrlParams = new URLSearchParams(resultUrl.split("?")[1]);
                         resultUrl = parsedUrlParams.get("q") || resultUrl;
-                    } catch (e: any) { /* Ignore URL parsing errors */ }
+                    } catch (e: any) {}
                 }
                 try {
                     const parsedResultUrl = new URL(resultUrl as string);
@@ -277,7 +277,7 @@ export async function fetchGoogleResults(query: string, start: number = 0, lang:
                         displayUrl: displayUrl || parsedResultUrl.hostname.replace(/^www\./, ""),
                         source: "Google"
                     });
-                } catch (e: any) { /* Ignore invalid URLs */ }
+                } catch (e: any) {}
             }
         });
         Cache.set(cacheKey, results);
@@ -322,7 +322,7 @@ export async function fetchBingResults(query: string, start: number = 0, lang: s
                         displayUrl: displayUrl || parsedResultUrl.hostname.replace(/^www\./, ""),
                         source: "Bing"
                     });
-                } catch (e: any) { /* Ignore invalid URLs */ }
+                } catch (e: any) {}
             }
         });
         Cache.set(cacheKey, results);
@@ -364,7 +364,7 @@ export async function fetchDuckDuckGoResults(query: string, start: number = 0, l
                         const params = new URLSearchParams(resultUrl.split("?")[1]);
                         const decodedUrl = decodeURIComponent(params.get("uddg") || "");
                         if (decodedUrl) resultUrl = decodedUrl;
-                    } catch (e: any) { /* Ignore parsing errors */ }
+                    } catch (e: any) {}
                 }
                 if (!resultUrl.startsWith("http")) return;
 
@@ -372,7 +372,7 @@ export async function fetchDuckDuckGoResults(query: string, start: number = 0, l
                     const parsedResultUrl = new URL(resultUrl);
                     if (!displayUrl) displayUrl = parsedResultUrl.hostname.replace(/^www\./, "");
                     results.push({ title, link: resultUrl, snippet, displayUrl, source: "DuckDuckGo" });
-                } catch (e: any) { /* Ignore invalid URLs */ }
+                } catch (e: any) {}
             }
         });
         Cache.set(cacheKey, results);
@@ -414,7 +414,7 @@ export async function fetchSearxResults(query: string, numPages: number = 10, la
                     try {
                         const realUrlParam = new URL(resultUrl, SEARX_BASE_URL).searchParams.get("q");
                         if (realUrlParam) resultUrl = realUrlParam;
-                    } catch (e: any) { /* Ignore parsing errors */ }
+                    } catch (e: any) {}
                 }
                 if (title && resultUrl && resultUrl !== "#" && !fetchedUrls.has(resultUrl)) {
                     try {
@@ -427,7 +427,7 @@ export async function fetchSearxResults(query: string, numPages: number = 10, la
                             source: "Searx"
                         });
                         fetchedUrls.add(resultUrl);
-                    } catch (e: any) { /* Ignore invalid URLs */ }
+                    } catch (e: any) {}
                 }
             });
         } catch (error: any) {
@@ -471,35 +471,58 @@ export async function fetchNewsResults(query: string, lang: string = "tr"): Prom
     }
 }
 
-function containsExcludedScripts(text: string): boolean {
+function isUnwantedLanguage(text: string): boolean {
     if (!text) return false;
-    for (let i = 0; i < text.length; i++) {
-        const code = text.codePointAt(i)!;
-        if ((code >= 0x0600 && code <= 0x06FF) || (code >= 0x4E00 && code <= 0x9FFF) ||
-            (code >= 0x3040 && code <= 0x30FF) || (code >= 0x1100 && code <= 0x11FF) ||
-            (code >= 0xAC00 && code <= 0xD7A3)) {
-            return true;
-        }
-    }
-    return false;
+    const unwantedScriptsRegex = /[\u0400-\u04FF\u0370-\u03FF\u0590-\u05FF\u0600-\u06FF\u4E00-\u9FFF\u3040-\u30FF\u1100-\u11FF\uAC00-\uD7A3]/;
+    return unwantedScriptsRegex.test(text);
 }
 
-function rankResultsByLanguage(results: SearchResult[], lang: string): SearchResult[] {
+function rankAndSortResults(results: SearchResult[], query: string, lang: string): SearchResult[] {
     const countryCode = langToCountryCode[lang] || "us";
     const specialEngTlds = ['.co.uk', '.com.au', '.co.nz', '.ca'];
     const genericTlds = ['.com', '.org', '.net', '.info', '.io', '.co', '.edu', '.gov'];
+    const informativeSites = [
+        'wikipedia.org', 
+        'reddit.com', 
+        'stackoverflow.com', 
+        'stackexchange.com', 
+        'quora.com',
+        'imdb.com',
+        'btt.community'
+    ];
 
     const getScore = (result: SearchResult): number => {
+        let score = 0;
+        const normalizedQuery = query.toLowerCase().split(' ')[0];
+
         try {
-            const hostname = new URL(result.link).hostname.toLowerCase();
-            if (hostname.endsWith(`.${countryCode}`)) return 4;
-            if (lang === 'en' && specialEngTlds.some(tld => hostname.endsWith(tld))) return 3;
-            if (genericTlds.some(tld => hostname.endsWith(tld))) return 2;
-            return 1;
+            const url = new URL(result.link);
+            const hostname = url.hostname.toLowerCase();
+
+            if (hostname.includes(normalizedQuery)) {
+                score += 100;
+            }
+            
+            if (informativeSites.some(site => hostname.endsWith(site))) {
+                score += 80;
+            }
+
+            if (hostname.endsWith(`.${countryCode}`)) {
+                score += 50;
+            } else if (lang === 'en' && specialEngTlds.some(tld => hostname.endsWith(tld))) {
+                score += 40;
+            } else if (genericTlds.some(tld => hostname.endsWith(tld))) {
+                score += 30;
+            } else {
+                score += 10;
+            }
+
         } catch (e) {
             return 0;
         }
+        return score;
     };
+
     return results.sort((a, b) => getScore(b) - getScore(a));
 }
 
@@ -532,9 +555,13 @@ export async function getAggregatedWebResults(query: string, start: number = 0, 
             fullCombinedList = [];
         }
     }
-
-    const filteredList = fullCombinedList.filter(result => !containsExcludedScripts(result.title) && !containsExcludedScripts(result.snippet));
-    const sortedList = rankResultsByLanguage(filteredList, lang);
+    
+    let filteredList = fullCombinedList;
+    if (lang === 'en' || lang === 'de') {
+       filteredList = fullCombinedList.filter(result => !isUnwantedLanguage(result.title) && !isUnwantedLanguage(result.snippet));
+    }
+    
+    const sortedList = rankAndSortResults(filteredList, query, lang);
     Cache.clear();
     return sortedList;
 }
@@ -545,31 +572,29 @@ export function checkBangRedirects(query: string): string | null {
     const searchQuery = parts.slice(1).join(" ");
 
     const bangs: { [key: string]: string } = {
-  "!g": "https://www.google.com/search?q=",
-  "!w": "https://www.wikipedia.org/w/index.php?search=",
-  "!bing": "https://www.bing.com/search?q=",
-  "!ddg": "https://duckduckgo.com/?q=",
-  "!amazon": "https://www.amazon.com/s?k=",
-  "!yt": "https://www.youtube.com/results?search_query=",
-  "!news": "https://news.google.com/search?q=",
-  "!gh": "https://github.com/search?q=",
-  "!so": "https://stackoverflow.com/search?q=",
-  "!r": "https://www.reddit.com/search?q=",
-  "!t": "https://twitter.com/search?q=",
-  "!imdb": "https://www.imdb.com/find/?q=",
-  "!npm": "https://www.npmjs.com/search?q=",
-  "!mdn": "https://developer.mozilla.org/en-US/search?q=",
-  "!wiki": "https://en.wikipedia.org/wiki/Special:Search?search=",
-  "!maps": "https://www.google.com/maps/search/",
-  "!wa": "https://www.wolframalpha.com/input?i=",
-  "!urban": "https://www.urbandictionary.com/define.php?term=",
-  "!etsy": "https://www.etsy.com/search?q=",
-  "!ebay": "https://www.ebay.com/sch/i.html?_nkw=",
-  "!yt": "https://youtube.com/results?search_query="
-};
+        "!g": "https://www.google.com/search?q=",
+        "!w": "https://www.wikipedia.org/w/index.php?search=",
+        "!bing": "https://www.bing.com/search?q=",
+        "!ddg": "https://duckduckgo.com/?q=",
+        "!amazon": "https://www.amazon.com/s?k=",
+        "!yt": "https://www.youtube.com/results?search_query=",
+        "!news": "https://news.google.com/search?q=",
+        "!gh": "https://github.com/search?q=",
+        "!so": "https://stackoverflow.com/search?q=",
+        "!r": "https://www.reddit.com/search?q=",
+        "!t": "https://twitter.com/search?q=",
+        "!imdb": "https://www.imdb.com/find/?q=",
+        "!npm": "https://www.npmjs.com/search?q=",
+        "!mdn": "https://developer.mozilla.org/en-US/search?q=",
+        "!wiki": "https://en.wikipedia.org/wiki/Special:Search?search=",
+        "!maps": "https://www.google.com/maps/search/",
+        "!wa": "https://www.wolframalpha.com/input?i=",
+        "!urban": "https://www.urbandictionary.com/define.php?term=",
+        "!etsy": "https://www.etsy.com/search?q=",
+        "!ebay": "https://www.ebay.com/sch/i.html?_nkw="
+    };
 
     if (bangs[bang]) {
-        if (bang === "!news") return `${bangs[bang]}${encodeURIComponent(searchQuery)}`;
         return `${bangs[bang]}${encodeURIComponent(searchQuery)}`;
     }
     return null;
