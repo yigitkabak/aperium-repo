@@ -1,38 +1,48 @@
-// Aperium için basitleştirilmiş bir Express modülü simülasyonu.
-// Bu modül, gerçek Express'in temel özelliklerini taklit eder.
+// aperium_modules/express-test/index.js
 
-module.exports = () => {
-    console.log("Express modülü Aperium'dan başarıyla yüklendi!");
+const path = require('path');
+const url = require('url');
 
+// This function simulates the behavior of the real Express module.
+// It returns a mock application object with `get` and `listen` methods.
+const createMockApp = () => {
     const routes = {};
-    const app = {};
 
-    app.get = (route, handler) => {
-        routes[route] = handler;
-        console.log(`- GET rotası ayarlandı: ${route}`);
-    };
+    const app = {
+        // Simulates the `app.get()` method for defining a GET route.
+        get: (routePath, handler) => {
+            routes[routePath] = handler;
+        },
 
-    app.listen = (port, callback) => {
-        console.log(`- Sunucu başlatılıyor: ${port}`);
-        
-        // Sunucu başlatma işlemini taklit et
-        if (callback && typeof callback === 'function') {
-            callback();
-        }
+        // Simulates the `app.listen()` method to start the server.
+        listen: (port, callback) => {
+            console.log(`Express-test server started on port: ${port}`);
+            
+            // In a real server, this would not block.
+            // We immediately call the callback to match the non-blocking behavior.
+            if (callback) {
+                callback();
+            }
 
-        // Bir isteği taklit edelim
-        if (routes['/']) {
-            console.log("--- İstek taklit edildi: '/' rotasına yanıt veriliyor ---");
-            const mockRequest = {};
-            const mockResponse = {
+            // A mock request handler to demonstrate the route.
+            console.log("--- Simulating a request to the '/' route ---");
+            const mockReq = { method: 'GET', url: '/' };
+            const mockRes = {
                 send: (message) => {
-                    console.log(`Sunucudan yanıt: "${message}"`);
+                    console.log(`Response from server: "${message}"`);
                 }
             };
-            routes['/'](mockRequest, mockResponse);
-            console.log("----------------------------------------------------------");
+
+            const handler = routes['/'];
+            if (handler) {
+                handler(mockReq, mockRes);
+            }
+            console.log("----------------------------------------------");
         }
     };
-    
+
     return app;
 };
+
+// Export the factory function, as is standard with Express.
+module.exports = createMockApp;
