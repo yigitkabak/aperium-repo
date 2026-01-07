@@ -1,0 +1,6 @@
+{
+    "name": "aperes",
+    "version": "1.0.0",
+    "description": "Lightweight express-like http wrapper for Aperium",
+    "main": "app.js"
+  }
