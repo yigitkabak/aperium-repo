@@ -1,9 +1,0 @@
-{
-  "name": "simple-express",
-  "version": "1.0.0",
-  "type": "module",
-  "main": "./app.js",
-  "exports": {
-    ".": "./app.js"
-  }
-}
