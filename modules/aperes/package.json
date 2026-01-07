@@ -1,0 +1,9 @@
+{
+  "name": "aperes",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./app.js",
+  "exports": {
+    ".": "./app.js"
+  }
+}
