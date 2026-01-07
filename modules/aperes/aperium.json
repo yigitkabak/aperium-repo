@@ -1,0 +1,15 @@
+{
+  "project": {
+    "name": "aperes",
+    "version": "1.0.0",
+    "description": "",
+    "author": "",
+    "license": "GPL-3.0-or-later"
+  },
+  "maain": "app.js",
+  "dependencies": {},
+  "imports": {},
+  "scripts": {
+    "start": "node app.js"
+  }
+}
